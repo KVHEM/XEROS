@@ -1,3 +1,7 @@
+Github repository for developing code used in XEROS project.
+
+Project synopsis:
+
 Recent European droughts are mostly evaluated within the context of hydroclimatic conditions of the second 
 half of the 20th century. It is thus possible, that recent European drought events are less (or more) severe 
 than previously thought. The XEROS project aims at (1) assessing the extremity of recent European drought events 
@@ -8,3 +12,5 @@ to estimate spatio-temporal dynamics of the surface and subsurface water compone
 understanding of historical characterisation of large scale drought events and exploratory analysis of the governing 
 atmospheric parameters influencing the genesis of droughts. Better understanding of the uncertainties in the past 
 will allow to project future hydroclimatic conditions across Europe more reliably.
+
+
