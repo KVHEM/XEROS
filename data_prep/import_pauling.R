@@ -29,7 +29,7 @@ cell_id <- c(1:length(lonlat[, 1])) # vector for cell id
 
 
 #---------making raw files--------
-pauling <-data.table() #final data table
+pauling <- data.table() #final data table
 
 for (i in 1:length(time_logs)) {
    precip_slice <- precip_array[, , i]   # creating array with one year and one season values
@@ -58,6 +58,6 @@ saveRDS(pauling, '.../.../data/input/gridded/pauling/pauling.rds')
 try<-pauling[year==1670]
 ggplot(try, aes(x = long, y = lat, fill = precip)) +
   geom_tile() +
-  scale_fill_gradient(low = "deepskyblue", high = 'red', na.value = "navyblue") + 
+  scale_fill_gradient(low = "deepskyblue", high = 'dark red', na.value = "navyblue") + 
   facet_grid(season ~ year) +
   theme_minimal()
