@@ -55,7 +55,7 @@ for (i in 1:length(time_logs)) {
 saveRDS(pauling, '.../.../data/input/gridded/pauling/pauling.rds')
 
 #------------validate-----------
-try<-pauling[year==1670]
+try<-pauling[year==1670] #change
 ggplot(try, aes(x = long, y = lat, fill = precip)) +
   geom_tile() +
   scale_fill_gradient(low = "deepskyblue", high = 'dark red', na.value = "navyblue") + 
