@@ -1,11 +1,10 @@
-
 library(ncdf4)
 library(ggplot2)
 library(data.table)
 library(RDS)
 
 #-----------read .nc file from working directory-------------
-ncpath <- '.../.../data/input/gridded/pauling/'
+ncpath <- '../../data/input/gridded/pauling/'
 ncname <- 'pauling'  
 ncfname <- paste(ncpath, ncname, '.nc', sep='')
 ncin <- nc_open(ncfname)
@@ -19,8 +18,8 @@ time_units <- ncatt_get(ncin, 'time', 'units')
 time_units_string <- strsplit(time_units$value, ' ')
 time_string <- strsplit(unlist(time_units_string)[3], '-')
 time_first_year <- as.integer(unlist(time_string)[1]) # first year of precipitation logs
-num_of_years <- length(time_logs)/4  # number of years
-last_year <- time_first_year+num_of_years 
+num_of_years <- length(time_logs) / 4  # number of years
+last_year <- time_first_year + num_of_years 
 season <- t(rep(c('wi', 'sp', 'su', 'au'), num_of_years)) # vector of years prepare for 'for cycle'
 year <- t(rep(c(time_first_year:last_year), each = 4)) # vector of seasons prepare for 'for cycle'
 precip_array <- ncvar_get(ncin, dname)  # array of all precipitation values
@@ -50,12 +49,17 @@ for (i in 1:length(time_logs)) {
 #-------------------------------------   
 }
 
+pauling[, season := factor(season, levels =  c('wi', 'sp', 'su', 'au'))]
+pauling <- pauling[complete.cases(pauling)]
+
 #---------save to RDS -----------
 
-saveRDS(pauling, '.../.../data/input/gridded/pauling/pauling.rds')
+saveRDS(pauling, '../../data/input/gridded/pauling/pauling.rds')
 
 #------------validate-----------
-try<-pauling[year==1670] #change
+pauling <- readRDS('../../data/input/gridded/pauling/pauling.rds')
+
+try <- paul[year == 1800] #change
 ggplot(try, aes(x = long, y = lat, fill = precip)) +
   geom_tile() +
   scale_fill_gradient(low = "deepskyblue", high = 'dark red', na.value = "navyblue") + 
