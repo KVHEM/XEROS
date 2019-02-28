@@ -4,7 +4,7 @@ library(data.table)
 library(RDS)
 
 #-----------read .nc file from working directory-------------
-ncpath <- '../../data/input/gridded/pauling/'
+ncpath <- '../../data/input/gridded/pauling/'  # directory of .nc file
 ncname <- 'pauling'  
 ncfname <- paste(ncpath, ncname, '.nc', sep='')
 ncin <- nc_open(ncfname)
