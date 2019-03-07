@@ -34,7 +34,7 @@ for (i in 1:length(time_logs)) {
    precip_slice <- precip_array[, , i]   # creating array with one year and one season values
    precip_vec <- as.vector(precip_slice)
    dt <- as.data.table(cbind(precip_vec, lonlat))
-   setnames(dt, old = c('precip_vec', 'Var1', 'Var2'), new = c('precip', 'long', 'lat'))
+   setnames(dt, old = c('precip_vec', 'Var1', 'Var2'), new = c('precip', 'lat', 'long'))
    dt[, year := year [, i]]
    dt[, season := season [, i]]
    dt[, cell_id := cell_id]
