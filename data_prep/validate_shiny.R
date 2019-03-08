@@ -83,7 +83,7 @@ server <- function(input, output) {
       geom_point() +
       theme_bw()
   })  
-  output$info <- renderPrint({
+  output$info <- renderPrint({ # prints info about the reconstruction plotted
     ts <- nearPoints(pages2k_meta, input$plot_click, xvar = "long_wintri", yvar = "lat_wintri", 
                         threshold = 10, maxpoints = 1,
                         addDist = TRUE)
