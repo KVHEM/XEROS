@@ -87,17 +87,33 @@ for (i in 1:length(year)) {
 #------------melting and save to RDS-------------
 cru_ts4.01 <-  unique(rbind(prep_pet, prep_pre, prep_tavg))
 
+cru_ts4.01[, season := factor(season, levels =  c('wi', 'sp', 'su', 'au'))] 
+setorder(cru_ts4.01, "cell_id", "year", "season")
+
+
 saveRDS(cru_ts4.01, '../../data/input/gridded/cru_ts4.01/cru_ts4.01.rds')
 
 #------------validate---------------------------
 prep_pre <- readRDS('../../data/input/gridded/cru_ts4.01/cru_ts4.01.rds')
-try <- prep_pre[year == 1968] #change
+try <- cru_ts4.01[year == 1968 & var == 'precip'] #change
 ggplot(try, aes(x = lat, y = long, fill = value)) +
   geom_tile() +
   scale_fill_gradient(low = "deepskyblue", high = 'dark red', na.value = "navyblue") + 
   facet_grid(season ~ year) +
   theme_minimal()
 
+try <- cru_ts4.01[year == 1968 & var == 'tavg'] #change
+ggplot(try, aes(x = lat, y = long, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient(low = "deepskyblue", high = 'dark red', na.value = "navyblue") + 
+  facet_grid(season ~ year) +
+  theme_minimal()
 
+try <- cru_ts4.01[year == 1968 & var == 'pet'] #change
+ggplot(try, aes(x = lat, y = long, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient(low = "deepskyblue", high = 'dark red', na.value = "navyblue") + 
+  facet_grid(season ~ year) +
+  theme_minimal()
 
 
