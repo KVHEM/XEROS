@@ -48,6 +48,8 @@ ts_id <- c(ts_id, ts_id_2)
 ts_id <- sapply(ts_id, unlist)
 ts_id <- melt(ts_id[-which(sapply(ts_id, is.null))])
 colnames(ts_id) = c('id', 'name')
+pages2k_meta <- merge(ts_id, pages2k_meta)
+
 
 pages2k_ts <- pages2k_ts[ts_id$name]
 names(pages2k_ts) <- ts_id$id
