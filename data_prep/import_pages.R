@@ -57,6 +57,11 @@ pages2k_eu <- rbindlist(lapply(pages2k_ts, data.table), idcol = T)
 colnames(pages2k_eu) <- c("id", "time", "temp")
 pages2k_eu <- pages2k_eu[time >= 1500]
 
+pages2k_meta = cbind(pages2k_meta,  #add wintri projection of coordinates to plot data sites on map
+                     data.table(project(cbind(long_wintri = pages2k_meta$long, 
+                                              lat_wintri = pages2k_meta$lat), 
+                                        proj = "+proj=wintri"))) 
+
 saveRDS(pages2k_eu, file = "../../data/input/point/pages2k_eu.rds")
 saveRDS(pages2k_meta, file = "../../data/input/point/pages2k_eu_meta.rds")
 
