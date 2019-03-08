@@ -14,3 +14,6 @@ import_cru_ts.R : rearrange and save CRU TS 4.01 version of gridded P, T and PET
                   PET: monthly values (mm/day) values were averaged for the season in (mm/day)
                   P: monthly values (mm/month) values were sumed for the season in (mm/season)
                   T: near surface averaged monthly temperature (°C) were averaged for the season
+                  
+import_pages.R : Import PAGES2k v2.0.0 Temperature reconstruction for Europe and transform from list to tidy format.
+                 Create meta file with the reconstruction properties. 
