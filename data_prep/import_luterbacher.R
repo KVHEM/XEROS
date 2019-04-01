@@ -41,10 +41,11 @@ luterbacher <- luterbacher[complete.cases(luterbacher)]
 saveRDS(luterbacher, "../../data/input/gridded/luterbacher/luterbacher.rds")
 
 #-----validate-----------
-luterbacher2 <- readRDS("../../data/input/gridded/luterbacher/luterbacher.rds")
+luterbacher <- readRDS("../../data/input/gridded/luterbacher/luterbacher.rds")
+#luterbacher <- readRDS("../../Projects/2018XEROS/data/input/gridded/luterbacher/luterbacher.rds")
 
 try <- luterbacher[year == 1802]
-ggplot(try, aes(x = lat, y =long , fill = temp)) +
+ggplot(try, aes(x = long, y = lat , fill = temp)) +
   geom_tile() +
   scale_fill_gradient(low = "deepskyblue", high = 'dark red', na.value = "navyblue") + 
   facet_grid(season ~ year) +
