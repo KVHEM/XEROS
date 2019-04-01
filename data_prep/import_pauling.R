@@ -5,6 +5,8 @@ library(RDS)
 
 #-----------read .nc file from working directory-------------
 ncpath <- '../../data/input/gridded/pauling/'  # directory of .nc file
+#ncpath <- "../../Projects/2018XEROS/data/input/gridded/pauling/" Secondary path
+
 ncname <- 'pauling'  
 ncfname <- paste(ncpath, ncname, '.nc', sep='')
 ncin <- nc_open(ncfname)
