@@ -3,12 +3,14 @@ library(shiny)
 library(ggplot2)
 
 #---------------load data---------------------
+#pages2k_ts <- readRDS("../../Projects/2018XEROS/data/input/point/pages2k_eu.rds")   #secondary path 
+#pages2k_meta <- readRDS("../../Projects/2018XEROS/data/input/point/pages2k_eu_meta.rds") #secondary path
 pages2k_ts <- readRDS("../../data/input/point/pages2k_eu.rds")
 pages2k_meta <- readRDS("../../data/input/point/pages2k_eu_meta.rds")
 
 # -----------prepare data for printing---------------
-meta_print <- pages2k_meta[,c('name','id','region','long','lat','archive', 'min_year','max_year')] 
-colnames(meta_print)<-c('Name','id', 'Region', 'Long', 'Lat', 'Archive', 'Year min.', 'Year max.')
+meta_print <- pages2k_meta[,c('name', 'id', 'region', 'long', 'lat', 'archive', 'min_year', 'max_year')] 
+colnames(meta_print)<-c('Name', 'id', 'Region', 'Long', 'Lat', 'Archive', 'Year min.', 'Year max.')
 #colour palette for legend and markers
 pal <- colorFactor(palette = c('red', 'blue', 'orange','green'),domain = meta_print$Archive) 
 
@@ -41,8 +43,9 @@ server <- shinyServer(function(input, output) {
   
   # plot temp
   output$plot <- renderPlot({
-      plot(ggplot(pages2k_ts[pages2k_ts$id %in% store_react$clickedMarker$id,], aes(time, temp)) +
-           geom_line())
+    plot(ggplot(pages2k_ts[pages2k_ts$id %in% store_react$clickedMarker$id,], aes(time, temp)) +
+           geom_line() +
+           theme_bw())
   })})
 })
 
