@@ -59,7 +59,7 @@ for (i in 1:length(year)) {
   pre_slice <- pre_array[, ,i]   
   pre_vec <- as.vector(pre_slice)
   dt <- as.data.table(cbind(pre_vec, lonlat))
-  setnames(dt, old = c('pre_vec', 'Var1', 'Var2'), new = c('value', 'long', 'lat'))
+  setnames(dt, old = c('pre_vec', 'Var1', 'Var2'), new = c('value', 'lat', 'long'))
   dt[, year := year [, i]]
   dt[, season := season [, i]]
   dt[, cell_id := cell_id]
@@ -75,7 +75,7 @@ for (i in 1:length(year)) {
   tavg_slice <- tavg_array[, ,i]   
   tavg_vec <- as.vector(tavg_slice)
   dt <- as.data.table(cbind(tavg_vec, lonlat))
-  setnames(dt, old = c('tavg_vec', 'Var1', 'Var2'), new = c('value', 'long', 'lat'))
+  setnames(dt, old = c('tavg_vec', 'Var1', 'Var2'), new = c('value', 'lat', 'long'))
   dt[, year := year [, i]]
   dt[, season := season [, i]]
   dt[, cell_id := cell_id]
@@ -90,27 +90,26 @@ cru_ts4.01 <-  unique(rbind(prep_pet, prep_pre, prep_tavg))
 cru_ts4.01[, season := factor(season, levels =  c('wi', 'sp', 'su', 'au'))] 
 setorder(cru_ts4.01, "cell_id", "year", "season")
 
-
-saveRDS(cru_ts4.01, '../../data/input/gridded/cru_ts4.01/cru_ts4.01.rds')
+saveRDS(cru_ts4.01, '../../Projects/2018XEROS/data/gridded/cru_ts4.01/cru_ts4.01.rds')
 
 #------------validate---------------------------
 prep_pre <- readRDS('../../data/input/gridded/cru_ts4.01/cru_ts4.01.rds')
 try <- cru_ts4.01[year == 1968 & var == 'precip'] #change
-ggplot(try, aes(x = lat, y = long, fill = value)) +
+ggplot(try, aes(x = long, y = lat, fill = value)) +
   geom_tile() +
   scale_fill_gradient(low = "deepskyblue", high = 'dark red', na.value = "navyblue") + 
   facet_grid(season ~ year) +
   theme_minimal()
 
 try <- cru_ts4.01[year == 1968 & var == 'tavg'] #change
-ggplot(try, aes(x = lat, y = long, fill = value)) +
+ggplot(try, aes(x = long, y = lat, fill = value)) +
   geom_tile() +
   scale_fill_gradient(low = "deepskyblue", high = 'dark red', na.value = "navyblue") + 
   facet_grid(season ~ year) +
   theme_minimal()
 
 try <- cru_ts4.01[year == 1968 & var == 'pet'] #change
-ggplot(try, aes(x = lat, y = long, fill = value)) +
+ggplot(try, aes(x = long, y = lat, fill = value)) +
   geom_tile() +
   scale_fill_gradient(low = "deepskyblue", high = 'dark red', na.value = "navyblue") + 
   facet_grid(season ~ year) +
