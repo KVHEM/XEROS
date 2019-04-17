@@ -59,16 +59,18 @@ server <- shinyServer(function(input, output) {
     
     output$plot <- renderPlot({
       ggplot(pauling[pauling$cell_id == store_react$clickedMarker$id], aes(year, precip)) +  # plot precip by season in every year
-             geom_line() + facet_wrap(~season) +
-             theme_bw() + ggtitle(paste('Seasonal precipitation in long:',store_react$clickedMarker$lng,
+        geom_line() + 
+        geom_vline(xintercept = unique(pauling[year == input$chosen_year]$year), col = 'red') +
+        facet_wrap(~season) +
+        theme_bw() + 
+        ggtitle(paste('Seasonal precipitation in long:',store_react$clickedMarker$lng,
                                         ' lat:',store_react$clickedMarker$lat ))+ # print clicked tile as header
-             ylab('Precip. (mm/season)') + xlab('Year')
+        ylab('Precip. (mm/season)') + 
+        xlab('Year')
     })})
 })
 
 
 #------------run shiny----------------
 shinyApp(ui, server)
-
-
 
