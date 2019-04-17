@@ -1,11 +1,10 @@
-
 library(rvest)
 library(data.table)
 library(RDS)
 
 #----------download----------------------
-path <- 'https://www1.ncdc.noaa.gov/pub/data/paleo/reconstructions/hydroclimate/ljungqvist2016/hydro_proxies/'
-dir_folder <- '../../data/input/point/raw/ljungqvist/'
+path <- 'https://www1.ncdc.noaa.gov/pub/data/paleo/reconstructions/hydroclimate/ljungqvist2016/temperature_proxies/'
+dir_folder <- '../../data/input/point/raw/ljungqvist_t/'
 
 
 html_files <- read_html(path) 
@@ -22,19 +21,24 @@ all_files <- all_files[V1 != 'Readme.txt'] # exluding readme file from further w
 melt_data <- data.table() # blank dta table
 melt_meta <- data.table()
 
-for (i in 1: nrow(all_files)) {
-  one_file <- as.data.table(read.delim(paste0(path, all_files[i]), skip=2, header = F, 
-                                       sep = '',col.names = c('time', 'value')))
-  one_file[,id:= paste0('ljun_', formatC(i, width = 3, flag = '0'))] # using 3 digits number id
+for (i in 1:nrow(all_files)) {
+  one_file <- as.data.table(read.delim(paste0(path, all_files[i]), skip = 2, header = F, 
+                                       sep = '', col.names = c('time', 'value')))
+  one_file[,id := paste0('ljun_', formatC(i, width = 3, flag = '0'))] # using 3 digits number id
   melt_data <- rbind(melt_data, one_file)
   
   one_meta <- as.data.table(read.delim(paste0(path, all_files[i]), nrows = 1, header = F, sep='\t', 
-                            col.names = c('long', 'lat', 'proxy', 'season', 'ref', 'name')))
+                                       col.names = c('long', 'lat', 'proxy', 'season', 'ref', 'name')))
   one_meta[,id:= paste0('ljun_', formatC(i, width = 3, flag = '0'))]
   melt_meta <- rbind(melt_meta, one_meta)
 }
 
 #--------------------save--------------------------------
+melt_data[, value := as.numeric(as.character(value))]
+melt_data <- melt_data[complete.cases(melt_data)]
+saveRDS(melt_data, file = '../../data/input/point/ljungvist_t.rds')
+saveRDS(melt_meta, file = '../../data/input/point/ljungvist_t_meta.rds')
 
-saveRDS(melt_data, file = '../../data/input/point/ljungvist.rds')
-saveRDS(melt_meta, file = '../../data/input/point/ljungvist_meta.rds')
+for (i in 1: nrow(all_files)) {
+print(plot(melt_data[id == unique(melt_data$id)[i], .(time, value)], type = 'l'))
+  }
