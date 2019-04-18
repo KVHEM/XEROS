@@ -18,13 +18,13 @@ grid_id <- one_layer [,c('long', 'lat', 'cell_id')]
 
 #--------------user interface------------------
 ui<- fluidPage(titlePanel('Seasonal precipitation data - Pauling'),
-  wellPanel(
-  numericInput('chosen_year', 'Enter year (valid input: 1500 - 2000):',
+ fluidRow( column(width = 5, offset = 0.5,
+   numericInput('chosen_year', 'Enter year (valid input: 1500 - 2000):',
                  value = 1500,  min = 1500, max = 2000, step = 1),
    radioButtons('seas', 'Season', c('winter'='wi', 'spring'='sp', 'summer'='su', 'autumn'='au'), inline = T), 
    actionButton('btn', 'Select')
     
-  ),
+  )),
   splitLayout(
     leafletOutput('map1', width = '100%',height="550px"),
     plotOutput('plot')
