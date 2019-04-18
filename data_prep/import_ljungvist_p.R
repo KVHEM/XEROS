@@ -5,14 +5,15 @@ library(RDS)
 
 #----------download----------------------
 path <- 'https://www1.ncdc.noaa.gov/pub/data/paleo/reconstructions/hydroclimate/ljungqvist2016/hydro_proxies/'
-dir_folder <- '.../.../data/input/point/raw/ljungvist/'
+dir_folder <- '../../data/input/point/raw/ljungqvist/'
+
 
 html_files <- read_html(path) 
 ul_text <- html_files %>% html_nodes("td") %>% html_text() # save text from source page into character string
-all_files <- as.data.table(ul_text[grep('.txt',ul_text)]) # choose only text that contains .txt
+all_files <- as.data.table(ul_text[grep('.txt', ul_text)]) # choose only text that contains .txt
 
 for (i in 1:nrow(all_files)) {
-  download.file(paste0(path,all_files[i]), paste0(dir_folder,all_files[i]))
+  download.file(paste0(path, all_files[i]), paste0(dir_folder, all_files[i]))
 }
 
 #------------------melt data ------------------------
@@ -35,5 +36,5 @@ for (i in 1: nrow(all_files)) {
 
 #--------------------save--------------------------------
 
-saveRDS(melt_data, file = '.../.../data/input/point/ljungvist.rds')
-saveRDS(melt_meta, file = '.../.../data/input/point/ljungvist_meta.rds')
+saveRDS(melt_data, file = '../../data/input/point/ljungvist.rds')
+saveRDS(melt_meta, file = '../../data/input/point/ljungvist_meta.rds')
