@@ -105,17 +105,17 @@ for (i in 1:length(list_names_m)) {
 }
 
 all_monthly_precip <- as.data.frame(all_monthly_precip)  # change format of lon lat and precip to numeic
-all_monthly_precip$station_country[ all_monthly_precip$station_country == 'UNITED'] <- 'UK'
-all_monthly_precip$precip[all_monthly_precip$precip == -999.90] <- NA
-all_monthly_precip$precip[all_monthly_precip$precip == -888.80] <- NA
+all_monthly_precip$station_country [all_monthly_precip$station_country == 'UNITED'] <- 'UK'
+all_monthly_precip$precip [all_monthly_precip$precip == -999.90] <- NA
+all_monthly_precip$precip [all_monthly_precip$precip == -888.80] <- NA
 cols.num <- c('precip','lon', 'lat', 'id')
-all_monthly_precip[cols.num] <- sapply(all_monthly_precip[cols.num],as.numeric)
+all_monthly_precip [cols.num] <- sapply(all_monthly_precip[cols.num],as.numeric)
 
 
 setnames( metadata_m_precip, old = c('V1', 'V2', 'V3', 'V4'), new= c('station_name', 'station_country', 'lon', 'lat')) # change format in metadata file
 metadata_m_precip <- as.data.frame(metadata_m_precip)
 cols.num <- c('lon', 'lat', 'id')
-metadata_m_precip[cols.num] <- sapply(metadata_m_precip[cols.num],as.numeric)
+metadata_m_precip [cols.num] <- sapply(metadata_m_precip[cols.num],as.numeric)
 metadata_m_precip$station_country[metadata_m_precip$station_country == 'UNITED'] <- 'UK'
 
 
