@@ -4,10 +4,10 @@ library(leaflet)
 
 
 #-----------download daily files-----------------------
-list_files_d <-read.delim('../../data/XEROS/data_adjust/precip_d/precip_d_source_knmi.txt', header = F) #read txt file with url adress of every station data
+list_files_d <-read.delim('../../data/input/data_adjust/precip_d/precip_d_source_knmi.txt', header = F) #read txt file with url adress of every station data
 file_name_d <- as.data.table(list_files_d$V1)
 file_name_d [, paste0('V1', 1:2) := tstrsplit(V1, 'data/')]
-path_d <- '../../data/XEROS/data_adjust/precip_d/'
+path_d <- '../../data/input/data_adjust/precip_d/'
 file_url_d<-as.character(file_name_d$V1)
 
 for (i in 1:nrow(list_files_d)) {
@@ -16,10 +16,10 @@ for (i in 1:nrow(list_files_d)) {
 }
 
 #-----------download monthly files------------
-list_files_m <-read.delim('../../data/XEROS/data_adjust/precip_m/precip_m_source_knmi.txt', header = F) #read txt file with url adress of every station data
+list_files_m <-read.delim('../../data/input/data_adjust/precip_m/precip_m_source_knmi.txt', header = F) #read txt file with url adress of every station data
 file_name_m <- as.data.table(list_files_m$V1)
 file_name_m [, paste0('V1', 1:2) := tstrsplit(V1, 'data/')]
-path_m <- '../../data/XEROS/data_adjust/precip_m/'
+path_m <- '../../data/input/data_adjust/precip_m/'
 file_url_m<-as.character(file_name_m$V1)
 
 for (i in 1:nrow(list_files_m)) {
@@ -121,8 +121,8 @@ metadata_m_precip$station_country[metadata_m_precip$station_country == 'UNITED']
 
 
 #----------------save RDS-------------------------
-saveRDS(all_daily_precip, file = '../../data/XEROS/data_adjust/all_daily_precip.rds')
-saveRDS(all_monthly_precip, file = '../../data/XEROS/data_adjust/all_monthly_precip.rds')
+saveRDS(all_daily_precip, file = '../../data/input/data_adjust/all_daily_precip.rds')
+saveRDS(all_monthly_precip, file = '../../data/input/data_adjust/all_monthly_precip.rds')
 
 
 #-------------chceck position of used station----------------
