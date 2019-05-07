@@ -1,7 +1,6 @@
 library(data.table)
 library(leaflet)
 
-
 #-----------download daily files-----------------------
 list_files_d <-read.delim('../../code/database/data_prep/ghcn/precip_d_source_knmi.txt', header = F) #read txt file with url adress of every station data
 file_name_d <- as.data.table(list_files_d$V1)
@@ -84,20 +83,20 @@ for (i in 1:length(list_names_m)){
   monthly_precip <- as.data.table(read.delim(list_names_m[i], skip = 17, header = F, sep = '')) 
   setnames(monthly_precip, 
            old = c('V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10', 'V11', 'V12', 'V13'),
-           new= c('year', 'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'))
+           new = c('year', 'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'))
   monthly_precip <- melt(monthly_precip, id.vars = 'year')
   
   rawmeta <- read.delim(list_names_m[i], skip = 9, nrows = 5, header = F, sep = '') # creating usable metadata file 
   rawmeta <- as.data.table(rawmeta)
   meta <- as.data.table(rawmeta[-c(3),-c(1, 2, 3, 5)])
   meta <- transpose(meta)
-  meta [ , id := i]
+  meta[, id := i]
 
-  monthly_precip [ , station_name := meta[,1]]  #columns with info about station country and coordinates
-  monthly_precip [ , station_country := meta[,2]]
-  monthly_precip [ , lon := meta[, 4]]
-  monthly_precip [ , lat := meta[, 3]]
-  monthly_precip [ , id := factor(i)]
+  monthly_precip[, station_name := meta[,1]]  #columns with info about station country and coordinates
+  monthly_precip[, station_country := meta[,2]]
+  monthly_precip[, lon := meta[, 4]]
+  monthly_precip[, lat := meta[, 3]]
+  monthly_precip[, id := factor(i)]
   setnames(monthly_precip, old = c('variable', 'value'), new = c('month', 'precip'))
 
   metadata_m_precip <- rbind (metadata_m_precip, meta)  # metadata file with matching id
@@ -121,11 +120,13 @@ metadata_m_precip [cols.num] <- sapply(metadata_m_precip[cols.num], as.numeric)
 metadata_m_precip$station_country[metadata_m_precip$station_country == 'UNITED'] <- 'UK'
 
 #----------------save RDS-------------------------
-saveRDS(all_daily_precip, file = '../../data/input/point/ghcn_daily_p.rds')
-saveRDS(all_monthly_precip, file = '../../data/input/point/ghcn_monthly_p.rds')
+saveRDS(data.table(all_daily_precip), file = '../../data/input/point/ghcn_daily_p.rds')
+saveRDS(data.table(all_monthly_precip), file = '../../data/input/point/ghcn_monthly_p.rds')
+save(metadata_m_precip, metadata_d_precip, file = '../../data/input/point/ghcn_meta.rdata')
 
+#-------------check position of used station----------------
+load('../../data/input/point/ghcn_meta.rdata')
 
-#-------------chceck position of used station----------------
 # daily data
 leaflet() %>% addTiles() %>%
   addMarkers(metadata_d_precip$lon, metadata_d_precip$lat,popup = metadata_d_precip$station_name)
