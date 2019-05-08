@@ -62,29 +62,33 @@ daily[month == '11', season := 'au']
 
 daily[,9] <- sapply(daily[,9], as.numeric)
 # sum od days date numbers in month, value must be bigger than 231 in order to have at least 21 days logs in month
-sum_of_days<-daily[,sum(day), by=list(id, year, month, season)] 
+sum_of_days <- daily[,sum(day), by=list(id, year, month, season)] 
 month_to_del <- sum_of_days[V1 <= 231]
-
 
 #-------------- create seasonal logs from daily data-------------
 
 daily_all <- daily[ ,sum(precip), by = list(id, year, season, station_country, station_name, lon, lat)]
-clean_daily <- daily_all[!month_to_del, on =.(id, year, season)]
+clean_daily <- daily_all[!month_to_del, on = .(id, year, season)]
 
 #---------adjust metadata--------------------
 meta_d <- load('../../data/input/point/ghcn_meta.rdata')
-new_id <- c(50:111)
 metadata_d_precip <- as.data.table(metadata_d_precip)
-metadata_d_precip[, id := NULL]
-metadata_d_precip[, id := new_id]
+metadata_d_precip[, id := paste0('d', id)]
+metadata_m_precip <- as.data.table(metadata_m_precip)
+metadata_m_precip[, id := paste0('m', id)]
 ghcn_meta_seas <- rbind(metadata_m_precip, metadata_d_precip)
 
+
+#---------adjust ids--------------------
+clean_monthly[, id := NULL]
+cl_monthly_new_id <- clean_monthly[metadata_m_precip, on = .(station_name, station_country, lon, lat)] # creating new id in clean daily
+
 clean_daily[, id := NULL]
-cl_daily_new_id<-clean_daily[metadata_d_precip, on =.(station_name, station_country, lon, lat)] # creating new id in clean daily
+cl_daily_new_id <- clean_daily[metadata_d_precip, on = .(station_name, station_country, lon, lat)] # creating new id in clean daily
 
 #---------- melt and save as seasonal data--------------
 
-ghcn_seasonal_p <- rbind(clean_monthly, cl_daily_new_id)
+ghcn_seasonal_p <- rbind(cl_monthly_new_id, cl_daily_new_id)
 setnames(ghcn_seasonal_p, old = 'V1', new = 'precip')
 
 saveRDS(ghcn_seasonal_p, '../../data/input/point/ghcn_seas_p.rds')
