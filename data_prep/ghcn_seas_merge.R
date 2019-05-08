@@ -78,6 +78,13 @@ metadata_m_precip <- as.data.table(metadata_m_precip)
 metadata_m_precip[, id := paste0('m', id)]
 ghcn_meta_seas <- rbind(metadata_m_precip, metadata_d_precip)
 
+#---------assign points to grid --------------------
+load('../../data/geodata/grid_cells.rdata')
+dt <- unique(bounds[ghcn_meta_seas, .(id, cell_id), 
+              on = .(lat_l <= lat, lat_u > lat,  
+                     long_l <= lon, long_u > lon)])
+ghcn_meta_seas <- ghcn_meta_seas[dt, on = 'id']
+ghcn_meta_seas <- ghcn_meta_seas[complete.cases(ghcn_meta_seas)]
 
 #---------adjust ids--------------------
 clean_monthly[, id := NULL]
@@ -87,7 +94,6 @@ clean_daily[, id := NULL]
 cl_daily_new_id <- clean_daily[metadata_d_precip, on = .(station_name, station_country, lon, lat)] # creating new id in clean daily
 
 #---------- melt and save as seasonal data--------------
-
 ghcn_seasonal_p <- rbind(cl_monthly_new_id, cl_daily_new_id)
 setnames(ghcn_seasonal_p, old = 'V1', new = 'precip')
 
