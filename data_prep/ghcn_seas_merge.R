@@ -60,7 +60,7 @@ daily[month == '09', season := 'au']
 daily[month == '10', season := 'au']
 daily[month == '11', season := 'au']
 
-daily[,9] <- sapply(daily[,9], as.numeric)
+daily[, 9] <- sapply(daily[,9], as.numeric)
 # sum of days in month, value must be bigger than 21 in order to have at least 21 days logs in month
 daily[, count := 1]
 sum_of_days <- daily[,sum(count), by=list(id, year, month, season)] 
