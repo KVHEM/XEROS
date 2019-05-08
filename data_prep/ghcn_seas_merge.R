@@ -93,6 +93,12 @@ cl_monthly_new_id <- clean_monthly[metadata_m_precip, on = .(station_name, stati
 clean_daily[, id := NULL]
 cl_daily_new_id <- clean_daily[metadata_d_precip, on = .(station_name, station_country, lon, lat)] # creating new id in clean daily
 
+#---------Remove meta info from time series------------
+ghcn_seasonal_p[, station_country := NULL]
+ghcn_seasonal_p[, station_name := NULL]
+ghcn_seasonal_p[, lon := NULL]
+ghcn_seasonal_p[, lat := NULL]
+
 #---------- melt and save as seasonal data--------------
 ghcn_seasonal_p <- rbind(cl_monthly_new_id, cl_daily_new_id)
 setnames(ghcn_seasonal_p, old = 'V1', new = 'precip')
