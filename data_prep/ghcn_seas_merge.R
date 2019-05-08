@@ -80,7 +80,7 @@ ghcn_meta_seas <- rbind(metadata_m_precip, metadata_d_precip)
 
 #---------assign points to grid --------------------
 load('../../data/geodata/grid_cells.rdata')
-dt <- unique(bounds[ghcn_meta_seas, .(id, cell_id), 
+dt <- unique(grid_bounds[ghcn_meta_seas, .(id, cell_id), 
               on = .(lat_l <= lat, lat_u > lat,  
                      long_l <= lon, long_u > lon)])
 ghcn_meta_seas <- ghcn_meta_seas[dt, on = 'id']
