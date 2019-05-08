@@ -106,6 +106,11 @@ ghcn_seasonal_p[, station_name := NULL]
 ghcn_seasonal_p[, lon := NULL]
 ghcn_seasonal_p[, lat := NULL]
 
+#---------fix column types--------------------------
+ghcn_seasonal_p[, year := as.numeric(year)]
+ghcn_seasonal_p[, season := factor(season, levels =  c('wi', 'sp', 'su', 'au'))] 
+ghcn_seasonal_p[, id := as.factor(id)]
+setorder(ghcn_seasonal_p, id, year, season)
 
 saveRDS(ghcn_seasonal_p, '../../data/input/point/ghcn_seas_p.rds')
 save(ghcn_meta_seas, file = '../../data/input/point/ghcn_meta_seas.rdata')
