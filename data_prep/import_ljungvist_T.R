@@ -16,7 +16,7 @@ for (i in 1:nrow(all_files)) {
 }
 
 #------------------melt data ------------------------
-all_files <- all_files[V1 != 'Readme.txt'] # exluding readme file from further work
+all_files <- all_files[V1 != 'Readme_temperature.txt'] # exluding readme file from further work
 
 melt_data <- data.table() # blank dta table
 melt_meta <- data.table()
@@ -32,12 +32,27 @@ for (i in 1:nrow(all_files)) {
   one_meta[,id:= paste0('ljun_', formatC(i, width = 3, flag = '0'))]
   melt_meta <- rbind(melt_meta, one_meta)
 }
+melt_meta[, 1] <- sapply(melt_meta[,1], as.character)
+melt_meta[, 1] <- sapply(melt_meta[,1], as.numeric)
+
+#--------------------grid id-----------------------
+grid_bounds <- readRDS('../../data/geodata/grid_cells.rds')
+grid_bounds <- grid_bounds[1:5791, ]
+dt <- unique(grid_bounds[melt_meta, .(id, cell_id), 
+                         on = .(lat_l <= lat, lat_u > lat,  
+                                long_l <= long, long_u > long)])
+melt_meta_id <- melt_meta[dt, on = 'id']
+melt_meta_id <- melt_meta_id[complete.cases(melt_meta_id)]
+
+leaflet() %>% addTiles() %>%
+  addMarkers(melt_meta$long, melt_meta$lat,popup = melt_meta_id$name)
 
 #--------------------save--------------------------------
 melt_data[, value := as.numeric(as.character(value))]
 melt_data <- melt_data[complete.cases(melt_data)]
 saveRDS(melt_data, file = '../../data/input/point/ljungvist_t.rds')
 saveRDS(melt_meta, file = '../../data/input/point/ljungvist_t_meta.rds')
+saveRDS(melt_meta_id, file = '../../data/input/point/ljungvist_t_meta_eu_grid.rds')
 
 for (i in 1: nrow(all_files)) {
 print(plot(melt_data[id == unique(melt_data$id)[i], .(time, value)], type = 'l'))
