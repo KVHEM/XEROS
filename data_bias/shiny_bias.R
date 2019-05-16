@@ -5,6 +5,9 @@ library(ggplot2)
 #---------------load and prepare data---------------------
 dta <- readRDS(file = "../../data/input/ghcn_pauling.rds")
 dta <- readRDS(file = "../../Projects/2018XEROS/data/input/ghcn_pauling.rds")
+pauling <- data.table(readRDS('../../Projects/2018XEROS/data/input/gridded/pauling/pauling.rds')) #alternative path
+dtb <- pauling[cell_id %in% unique(dta$cell_id)]
+
 meta_print <- unique(dta[, c('cell_id', 'long', 'lat', 'period', 'season', 'n_val')] )
 colnames(meta_print) <- c('id', 'Long', 'Lat', 'Period', 'Season', 'N')
 
@@ -17,7 +20,8 @@ ui <- fluidPage(fluidRow(
   leafletOutput('map'),
   tableOutput('info'),
   plotOutput('plot_dist'),
-  plotOutput('plot_ts')
+  plotOutput('plot_ts'),
+  plotOutput('plot_all')
 ))
 
 #------------------shiny function------------------
@@ -56,7 +60,14 @@ server <- shinyServer(function(input, output) {
                scale_colour_manual(values = c("seagreen", "orange3")) +
                facet_wrap(~season) +
                theme_bw())
-    })   
+    })  
+    output$plot_all <- renderPlot({
+      plot(ggplot(dtb[dtb$cell_id %in% store_react$clickedMarker$id, ], 
+                  aes(x = year, y = precip)) + 
+             geom_line() +
+             facet_wrap(~season) +
+             theme_bw())
+    }) 
   })
 })
 
