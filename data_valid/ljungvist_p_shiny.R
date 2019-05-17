@@ -3,8 +3,8 @@ library(shiny)
 library(ggplot2)
 
 #---------------load data---------------------
-#ljungvist_ts <- readRDS("../../Projects/2018XEROS/data/input/point/ljungvist_eu.rds")   #secondary path 
-#ljungvist_meta <- readRDS("../../Projects/2018XEROS/data/input/point/ljungvist_eu_meta.rds") #secondary path
+ljungvist_ts <- readRDS("../../Projects/2018XEROS/data/input/point/ljungvist_p.rds")   #secondary path 
+ljungvist_meta <- readRDS("../../Projects/2018XEROS/data/input/point/ljungvist_p_meta.rds") #secondary path
 ljungvist_ts <- readRDS("../../data/input/point/ljungvist_p.rds")
 ljungvist_meta <- readRDS("../../data/input/point/ljungvist_p_meta.rds")
 
