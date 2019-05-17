@@ -1,15 +1,19 @@
 library(leaflet)
 library(shiny) 
 library(ggplot2)
-
+library(plyr)
+library(data.table)
 #---------------load and prepare data---------------------
 dta <- readRDS(file = "../../data/input/ghcn_pauling.rds")
-dta <- readRDS(file = "../../Projects/2018XEROS/data/input/ghcn_pauling.rds")
-pauling <- data.table(readRDS('../../Projects/2018XEROS/data/input/gridded/pauling/pauling.rds')) #alternative path
-dtb <- pauling[cell_id %in% unique(dta$cell_id)]
+pauling <- data.table(readRDS('../../data/input/gridded/pauling/pauling.rds')) 
 
+dta <- readRDS(file = "../../Projects/2018XEROS/data/input/ghcn_pauling.rds") #alternative path
+pauling <- data.table(readRDS('../../Projects/2018XEROS/data/input/gridded/pauling/pauling.rds')) #alternative path
+
+dtb <- pauling[cell_id %in% unique(dta$cell_id)]
 meta_print <- unique(dta[, c('cell_id', 'long', 'lat', 'period', 'season', 'n_val')] )
 colnames(meta_print) <- c('id', 'Long', 'Lat', 'Period', 'Season', 'N')
+dtb[, mov_var := zoo::rollapplyr(precip, 1:.N, mean), by = .(cell_id, season)]
 
 ecdf_plot <- ddply(dta, .(cell_id, season, period, dataset), summarize,
                    precip = unique(precip),
@@ -45,6 +49,7 @@ server <- shinyServer(function(input, output) {
     output$info <- renderTable({
       return(subset(meta_print[, c('id', 'Period', 'Season', 'N')], id == store_react$clickedMarker$id))
     })
+    # plot ecdf 
     output$plot_dist <- renderPlot({
       plot(ggplot(ecdf_plot[ecdf_plot$cell_id %in% store_react$clickedMarker$id, ], 
                   aes(x = precip, y = ecdf, color = dataset, linetype = period)) + 
@@ -53,6 +58,7 @@ server <- shinyServer(function(input, output) {
              facet_wrap(~season) +
              theme_bw())
     })
+    # plot timeseries/reconstruction comparison
     output$plot_ts <- renderPlot({
       plot(ggplot(dta[dta$cell_id %in% store_react$clickedMarker$id, ], 
                     aes(x = year, y = precip, color = dataset, linetype = period)) + 
@@ -60,7 +66,8 @@ server <- shinyServer(function(input, output) {
                scale_colour_manual(values = c("seagreen", "orange3")) +
                facet_wrap(~season) +
                theme_bw())
-    })  
+    })
+    #plot whole reconstruction
     output$plot_all <- renderPlot({
       plot(ggplot(dtb[dtb$cell_id %in% store_react$clickedMarker$id, ], 
                   aes(x = year, y = precip)) + 
