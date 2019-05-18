@@ -1,6 +1,7 @@
 library(pipeR)
 library(data.table)
 library(rlist)
+library(rgdal)
 
 load('../../data/input/point/raw/PAGES2k_v2.0.0.RData')
 
@@ -12,19 +13,19 @@ var_names <- vector()
 
 raw_dataset_eu <- raw_dataset[grepl("Eur-", names(raw_dataset))]
 
-pages2k <- raw_dataset_eu %>>%
+pages2k <- raw_dataset_eu %>%
   subset(max(paleoData[[1]]$paleoMeasurementTable[[1]]$year$values) > 1500) #Keep records with at least one value after 1500
 pages2k_size = length(pages2k)
 
-pages2k_meta <- pages2k %>>% #These properties exist in all records
+pages2k_meta <- pages2k %>% #These properties exist in all records
   list.select(name = dataSetName, archive = archiveType, region = geo$pages2kRegion, long = geo$longitude, lat = geo$latitude, 
-              min_year = minYear, max_year = maxYear) %>>%
-  list.stack %>>%
+              min_year = minYear, max_year = maxYear) %>%
+  list.stack %>%
   data.table
 
-pages2k_ts <- pages2k %>>% ## Time series
+pages2k_ts <- pages2k %>% ## Time series
   list.select(paleoData[[1]]$paleoMeasurementTable[[1]]$trsgi$values)
-pages2k_ts_2 <- pages2k %>>% ## Time series
+pages2k_ts_2 <- pages2k %>% ## Time series
   list.select(paleoData[[1]]$paleoMeasurementTable[[1]]$temperature$values)
 pages2k_ts <- sapply(pages2k_ts, unlist)
 pages2k_ts <- pages2k_ts[-which(sapply(pages2k_ts, is.null))]
@@ -32,16 +33,16 @@ pages2k_ts_2 <- sapply(pages2k_ts_2, unlist)
 pages2k_ts_2 <- pages2k_ts_2[-which(sapply(pages2k_ts_2, is.null))]
 pages2k_ts <- c(pages2k_ts, pages2k_ts_2)
 
-pages2k_ts_time <- pages2k %>>%
+pages2k_ts_time <- pages2k %>%
   list.select(paleoData[[1]]$paleoMeasurementTable[[1]]$year$values)
 pages2k_ts_time <- pages2k_ts_time[names(pages2k_ts)]
 pages2k_ts_time <- sapply(pages2k_ts_time, unlist)
 
 pages2k_ts <- mapply(cbind, pages2k_ts_time, pages2k_ts, SIMPLIFY = FALSE)
 
-ts_id <- pages2k %>>% 
+ts_id <- pages2k %>% 
   list.select(paleoData[[1]]$paleoMeasurementTable[[1]]$trsgi$pages2kID)
-ts_id_2 <- pages2k %>>% 
+ts_id_2 <- pages2k %>% 
   list.select(paleoData[[1]]$paleoMeasurementTable[[1]]$temperature$pages2kID)
 
 ts_id <- c(ts_id, ts_id_2)
@@ -62,7 +63,22 @@ pages2k_meta = cbind(pages2k_meta,  #add wintri projection of coordinates to plo
                                               lat_wintri = pages2k_meta$lat), 
                                         proj = "+proj=wintri"))) 
 
+
+#--------------------grid id-----------------------
+grid_bounds <- readRDS('../../data/geodata/grid_cells.rds')
+grid_bounds <- grid_bounds[1:5791, ]
+dt <- unique(grid_bounds[pages2k_meta, .(id, cell_id), 
+                         on = .(lat_l <= lat, lat_u > lat,  
+                                long_l <= long, long_u > long)])
+pages2k_meta <- as.data.table(pages2k_meta)
+pages2k_meta_id <- pages2k_meta[dt, on = 'id']
+pages2k_meta_id <- pages2k_meta_id[complete.cases(pages2k_meta_id)]
+
+leaflet() %>% addTiles() %>%
+  addMarkers(pages2k_meta$long, pages2k_meta$lat,popup = pages2k_meta$archive)
+
+
 saveRDS(pages2k_eu, file = "../../data/input/point/pages2k_eu.rds")
 saveRDS(pages2k_meta, file = "../../data/input/point/pages2k_eu_meta.rds")
-
+saveRDS(pages2k_meta_id, file = "../../data/input/point/pages2k_eu_meta_grid.rds")
 

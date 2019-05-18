@@ -2,6 +2,7 @@
 library(rvest)
 library(data.table)
 library(RDS)
+library(leaflet)
 
 #----------download----------------------
 path <- 'https://www1.ncdc.noaa.gov/pub/data/paleo/reconstructions/hydroclimate/ljungqvist2016/hydro_proxies/'
@@ -29,12 +30,26 @@ for (i in 1: nrow(all_files)) {
   melt_data <- rbind(melt_data, one_file)
   
   one_meta <- as.data.table(read.delim(paste0(path, all_files[i]), nrows = 1, header = F, sep='\t', 
-                            col.names = c('long', 'lat', 'proxy', 'season', 'ref', 'name')))
+                            col.names = c('long','lat','proxy', 'season', 'ref', 'name')))
   one_meta[,id:= paste0('ljun_', formatC(i, width = 3, flag = '0'))]
   melt_meta <- rbind(melt_meta, one_meta)
 }
+
+#--------------------grid id-----------------------
+grid_bounds <- readRDS('../../data/geodata/grid_cells.rds')
+grid_bounds <- grid_bounds[1:5791, ]
+dt <- unique(grid_bounds[melt_meta, .(id, cell_id), 
+                         on = .(lat_l <= lat, lat_u > lat,  
+                                long_l <= long, long_u > long)])
+melt_meta_id <- melt_meta[dt, on = 'id']
+melt_meta_id <- melt_meta_id[complete.cases(melt_meta_id)]
+
+leaflet() %>% addTiles() %>%
+  addMarkers(melt_meta_id$long, melt_meta_id$lat,popup = melt_meta_id$name)
+
 
 #--------------------save--------------------------------
 
 saveRDS(melt_data, file = '../../data/input/point/ljungvist.rds')
 saveRDS(melt_meta, file = '../../data/input/point/ljungvist_meta.rds')
+saveRDS(melt_meta_id, file = '../../data/input/point/ljungvist_meta_eu_grid.rds')
