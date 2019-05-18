@@ -34,6 +34,7 @@ luterbacher[, lat := rep(seq(-24.75, 39.75, 0.5), each = num_of_files, 70)]  #la
 luterbacher[, long := rep(seq(69.75, 35.25, -0.5), each = 130 * num_of_files)]  #longitude based on given order after melt
 luterbacher[luterbacher == -999.99] <- NA   # -999.99 to NA values
 luterbacher[, season := factor(season, levels =  c('wi', 'sp', 'su', 'au'))] 
+luterbacher[, temp_yr := mean(temp), .(year, cell_id)]
 setorder(luterbacher, "cell_id", "year", "season")
 luterbacher <- luterbacher[complete.cases(luterbacher)]
 
