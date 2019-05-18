@@ -41,6 +41,7 @@ for (i in 1:length(time_logs)) {
    dt[, season := season [, i]]
    dt[, cell_id := cell_id]
    dt <- dt[, c(6, 1, 4, 5, 3, 2)]  # column order
+   dt >- dt[, precip_yr := sum(precip), .(year, cell_id)]
    pauling <- rbind(pauling, dt) # adding every new slice to same data table
 #---------if you want to create text files------
    #j <- year[, i]
