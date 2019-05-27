@@ -55,6 +55,18 @@ for (i in 1:length(time_logs)) {
 pauling[, season := factor(season, levels =  c('wi', 'sp', 'su', 'au'))]
 pauling <- pauling[complete.cases(pauling)]
 
+#-------date format time logs--------
+pauling[ season == 'wi', mo:=1]    
+pauling[ season == 'au', mo:=10]
+pauling[ season == 'sp', mo:=4]
+pauling[ season == 'su', mo:=7]
+pauling[, day:= factor(15)]
+pauling[, time := NA]
+pauling$time <- as.Date(with(pauling, paste(year, mo, day,sep="-")), "%Y-%m-%d")
+pauling[, mo := NULL]
+pauling[, day := NULL]
+head(pauling)
+
 #---------save to RDS -----------
 
 saveRDS(pauling, '../../data/input/gridded/pauling/pauling.rds')

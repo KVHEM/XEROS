@@ -1,6 +1,8 @@
 library(data.table)
 library(readtext)
 library(ggplot2)
+library(lubridate)
+library(magrittr)
 
 dload_path <- '../../data/input/gridded/luterbacher/raw/'
 
@@ -37,6 +39,18 @@ luterbacher[, season := factor(season, levels =  c('wi', 'sp', 'su', 'au'))]
 luterbacher[, temp_yr := mean(temp), .(year, cell_id)]
 setorder(luterbacher, "cell_id", "year", "season")
 luterbacher <- luterbacher[complete.cases(luterbacher)]
+
+#-------date format time logs--------
+luterbacher[ season == 'wi', mo:=1]    
+luterbacher[ season == 'au', mo:=10]
+luterbacher[ season == 'sp', mo:=4]
+luterbacher[ season == 'su', mo:=7]
+luterbacher[, day:= factor(15)]
+luterbacher[, time := NA]
+luterbacher$time <- as.Date(with(luterbacher, paste(year, mo, day,sep="-")), "%Y-%m-%d")
+luterbacher[, mo := NULL]
+luterbacher[, day := NULL]
+head(luterbacher)
 
 #------save-----------
 saveRDS(luterbacher, "../../data/input/gridded/luterbacher/luterbacher.rds")
