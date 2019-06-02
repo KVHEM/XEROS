@@ -26,3 +26,5 @@ import_ghcn_p.R : It downloads daily and monthly precipitation data from europia
 import_ljungvist_p.R :  It downloads ljungvist hydroclimate data from database and merge them. Data were                            saved into RDS file and metadata file. Stations from europe were picked from                                metadata, conected to grid cell ids and saved separetly into eu metadata.
 
 import_ljungvist_T.R :  It downloads ljungvist temperature data from database and merge them. Data were                             saved into RDS file and metadata file. Stations from europe were picked from                                metadata, conected to grid cell ids and saved separetly into eu metadata. 
+
+timescale.R : Creates averaged values in 5 and 10 years time periods of pages, luterbacher, owda and                     ljungvist datasets. 
