@@ -41,6 +41,7 @@ for (i in 1:length(time_logs)) {
    dt[, season := season [, i]]
    dt[, cell_id := cell_id]
    dt <- dt[, c(6, 1, 4, 5, 3, 2)]  # column order
+   dt[, precip_yr := sum(precip), .(year, cell_id)]
    pauling <- rbind(pauling, dt) # adding every new slice to same data table
 #---------if you want to create text files------
    #j <- year[, i]
@@ -53,6 +54,18 @@ for (i in 1:length(time_logs)) {
 
 pauling[, season := factor(season, levels =  c('wi', 'sp', 'su', 'au'))]
 pauling <- pauling[complete.cases(pauling)]
+
+#-------date format time logs--------
+pauling[ season == 'wi', mo:=1]    
+pauling[ season == 'au', mo:=10]
+pauling[ season == 'sp', mo:=4]
+pauling[ season == 'su', mo:=7]
+pauling[, day:= factor(15)]
+pauling[, time := NA]
+pauling$time <- as.Date(with(pauling, paste(year, mo, day,sep="-")), "%Y-%m-%d")
+pauling[, mo := NULL]
+pauling[, day := NULL]
+head(pauling)
 
 #---------save to RDS -----------
 
