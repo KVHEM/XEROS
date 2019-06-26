@@ -45,6 +45,7 @@ dtc <- dtc[cell_id %in% dta$cell_id]
 
 dtc <- dtc[year >= 1697 & year <= 2000] # cutting owda years to be same time period as ghcn_pauling
 dtc[, season := factor('su')]
+dtc <- unique(dtc)
 dtc[, precip_scale := scale(dtc$scPDSI)] # scaling owda data separetly
 # renaming columns to be same as dta table for easier manipulation in shiny app
 setnames(dtc, old = c('Lon', 'Lat', 'scPDSI'), new = c('long', 'lat', 'precip')) 
