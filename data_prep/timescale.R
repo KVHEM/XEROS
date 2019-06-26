@@ -1,4 +1,5 @@
 library(RDS)
+library(data.table)
 
 #--------load data--------
 
@@ -8,10 +9,16 @@ owda <- readRDS('../../data/input/gridded/owda/owda_1000.rds')
 ljungvist <- readRDS('../../data/input/point/ljungvist_t.rds')
 pages <- readRDS('../../data/input/point/pages2k_eu.rds')
 
+luterbacher <- readRDS('../../Projects/2018XEROS/data/input/gridded/luterbacher/luterbacher.rds')
+pauling <- readRDS('../../Projects/2018XEROS/data/input/gridded/pauling/pauling.rds')
+owda <- readRDS('../../Projects/2018XEROS/data/input/gridded/owda/owda_1000.rds')
+ljungvist <- readRDS('../../Projects/2018XEROS/data/input/point/ljungvist_t.rds')
+pages <- readRDS('../../Projects/2018XEROS/data/input/point/pages2k_eu.rds')
+
 #-------------creating averaged value by 10 and 5 years-----------------
 
 #pauling
-pauling_anual <- pauling[,mean(precip), by=c('year', 'long', 'lat', 'cell_id')]
+pauling_anual <- pauling[, mean(precip), by = c('year', 'long', 'lat', 'cell_id')]
 pauling_anual[, period := factor(paste0(year - (year %% 10), '-', year - (year %% 10)+9))]
 pauling_decade <- pauling_anual[,mean(V1), by=c('period', 'long', 'lat', 'cell_id')]
 pauling_10yr <- merge(pauling_anual, pauling_decade, by = c('period', 'cell_id'))
@@ -81,6 +88,7 @@ owda[,Lon := NULL]
 owda <- cbind(east, owda)
 owda[, cell_id := NA]
 grid_bounds <- readRDS('../../data/geodata/grid_cells.rds')
+grid_bounds <- readRDS('../../Projects/2018XEROS/data/geodata/grid_cells.rds')
 grid_bounds <- grid_bounds[1:5791, ]
 owda <- grid_bounds[owda, .(cell_id, Time, Lat, Lon, scPDSI), 
                    on = .(lat_l <= Lat, lat_u > Lat,  
@@ -177,3 +185,14 @@ saveRDS(ljungvist_10yr, '../../data/input/point/timescales/ljungvist_10yr.rds')
 saveRDS(ljungvist_5yr, '../../data/input/point/timescales/ljungvist_5yr.rds')
 saveRDS(pages_10yr, '../../data/input/point/timescales/ljungvist_10yr.rds')
 saveRDS(pages_5yr, '../../data/input/point/timescales/ljungvist_5yr.rds')
+
+saveRDS(pauling_10yr, '../../Projects/2018XEROS/data/input/point/timescales/pauling_10yr.rds')
+saveRDS(pauling_5yr, '../../Projects/2018XEROS/data/input/point/timescales/pauling_5yr.rds')
+saveRDS(luterbacher_10yr, '../../Projects/2018XEROS/data/input/point/timescales/luterbacher_10yr.rds')
+saveRDS(luterbacher_5yr, '../../Projects/2018XEROS/data/input/point/timescales/luterbacher_5yr.rds')
+saveRDS(owda_10yr, '../../Projects/2018XEROS/data/input/point/timescales/owda_10yr.rds')
+saveRDS(owda_5yr, '../../Projects/2018XEROS/data/input/point/timescales/owda_5yr.rds')
+saveRDS(ljungvist_10yr, '../../Projects/2018XEROS/data/input/point/timescales/ljungvist_10yr.rds')
+saveRDS(ljungvist_5yr, '../../Projects/2018XEROS/data/input/point/timescales/ljungvist_5yr.rds')
+saveRDS(pages_10yr, '../../Projects/2018XEROS/data/input/point/timescales/ljungvist_10yr.rds')
+saveRDS(pages_5yr, '../../Projects/2018XEROS/data/input/point/timescales/ljungvist_5yr.rds')
