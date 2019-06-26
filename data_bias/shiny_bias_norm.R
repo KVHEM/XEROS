@@ -25,6 +25,7 @@ dtb[, precip_scale := scale(dtb$precip)]
 
 
 owda <- data.table(readRDS('../../data/input/gridded/owda/owda_1000.rds'))
+owda <- data.table(readRDS('../../Projects/2018XEROS/data/input/gridded/owda/owda_1000.rds'))
 setnames(owda, old = 'Time', new = 'year')
 # owda grid corection
 east <- owda[,3] + 0.25
@@ -34,6 +35,7 @@ owda <- cbind(east, owda)
 
 # creating cell_id based on transfering stations id into grid id
 grid_bounds <- readRDS('../../data/geodata/grid_cells.rds')
+grid_bounds <- readRDS('../../Projects/2018XEROS/data/geodata/grid_cells.rds')
 grid_bounds <- grid_bounds[1:5791, ]
 dtc <- grid_bounds[owda, .(cell_id, year, Lat, Lon, scPDSI), 
                       on = .(lat_l <= Lat, lat_u > Lat,  
