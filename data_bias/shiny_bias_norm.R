@@ -20,8 +20,8 @@ colnames(meta_print) <- c('id', 'Long', 'Lat', 'Period', 'Season', 'N')
 dtb[, mov_var := zoo::rollapplyr(precip, 1:.N, mean), by = .(cell_id, season)]
 meta_print_owda <- 
 
-dta[, precip_scale := scale(dta$precip)]# scaling precip data
-dtb[, precip_scale := scale(dtb$precip)]
+dta[, precip_scale := scale(precip), .(cell_id, season)]# scaling precip data
+dtb[, precip_scale := scale(precip), .(cell_id, season)]
 
 
 owda <- data.table(readRDS('../../data/input/gridded/owda/owda_1000.rds'))
@@ -46,7 +46,7 @@ dtc <- dtc[cell_id %in% dta$cell_id]
 dtc <- dtc[year >= 1697 & year <= 2000] # cutting owda years to be same time period as ghcn_pauling
 dtc[, season := factor('su')]
 dtc <- unique(dtc)
-dtc[, precip_scale := scale(dtc$scPDSI)] # scaling owda data separetly
+dtc[, precip_scale := scale(scPDSI), cell_id] # scaling owda data separetly
 # renaming columns to be same as dta table for easier manipulation in shiny app
 setnames(dtc, old = c('Lon', 'Lat', 'scPDSI'), new = c('long', 'lat', 'precip')) 
 dtc[year < 1900, period := factor("pre_1900")] # creating periods
