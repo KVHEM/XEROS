@@ -45,7 +45,6 @@ dtc <- dtc[cell_id %in% dta$cell_id]
 
 dtc <- dtc[year >= 1697 & year <= 2000] # cutting owda years to be same time period as ghcn_pauling
 dtc[, season := factor('su')]
-dtc <- unique(dtc)
 dtc[, precip_scale := scale(scPDSI), cell_id] # scaling owda data separetly
 # renaming columns to be same as dta table for easier manipulation in shiny app
 setnames(dtc, old = c('Lon', 'Lat', 'scPDSI'), new = c('long', 'lat', 'precip')) 
@@ -59,6 +58,7 @@ dta <- dta[cell_id %in% dtc$cell_id]
 meta_print_owda <- meta_print[id %in% dtc$cell_id]
 
 dtc <- dtc[dta, .( cell_id, year, season, precip, long, lat, period, n_val, dataset, precip_scale), on = .(cell_id == cell_id, year == year)]
+dtc <- unique(dtc)
 
 # merge owda data with ghcn_pauling
 dta <- rbind(dta, dtc)
