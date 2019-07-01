@@ -19,13 +19,8 @@ meta_print <- unique(dta[, c('cell_id', 'long', 'lat', 'period', 'season', 'n_va
 colnames(meta_print) <- c('id', 'Long', 'Lat', 'Period', 'Season', 'N')
 dtb[, mov_var := zoo::rollapplyr(precip, 1:.N, mean), by = .(cell_id, season)]
 meta_print_owda <- 
-<<<<<<< HEAD
   
   dta[, precip_scale := scale(precip), .(cell_id, season)]# scaling precip data
-=======
-
-dta[, precip_scale := scale(precip), .(cell_id, season)]# scaling precip data
->>>>>>> 71a94eff1b86654f2b76b607f15493dd3dd6c6f1
 dtb[, precip_scale := scale(precip), .(cell_id, season)]
 
 
