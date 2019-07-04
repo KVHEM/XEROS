@@ -161,3 +161,19 @@ server <- shinyServer(function(input, output) {
 
 #-------run shiny---------------------
 shinyApp(ui, server)
+
+precip[, precip_year := sum(precip), .(cell_id, dataset)]
+precip_su <- dta[season == 'su', .(dataset, cell_id, year, precip_scale)]
+precip <- dta[, .(dataset, cell_id, year, precip_year)]
+precip <- unique(precip)
+precip[, precip_z := scale(precip_year), .(dataset, cell_id)]
+precip[, precip_year := NULL]
+precip_taylor <- dcast(precip, ... ~ dataset, value.var = "precip_z")
+taylor.diagram(precip_taylor$GHCN, precip_taylor$Pauling, sd.arcs=T, ref.sd=T)
+taylor.diagram(precip_taylor[year < 1900, GHCN], precip_taylor[year < 1900, Pauling], add = T, col = 'dark red')
+taylor.diagram(precip_taylor[year > 1900, GHCN], precip_taylor[year > 1900, Pauling], add = T, col = 'tomato3')
+taylor.diagram(precip_taylor$GHCN, precip_taylor$OWDA, add = T, col = 'blue')
+taylor.diagram(precip_taylor[year < 1900, GHCN], precip_taylor[year < 1900, OWDA], add = T, col = 'dark blue')
+taylor.diagram(precip_taylor[year > 1900, GHCN], precip_taylor[year > 1900, OWDA], add = T, col = 'steelblue')
+
+
