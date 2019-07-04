@@ -122,8 +122,8 @@ server <- shinyServer(function(input, output) {
     
     # plot taylor diagram
     output$plot_taylor_paul<- renderPlot({
-      taylor.diagram(dta_ghcn[dta_ghcn$cell_id %in% store_react$clickedMarker$id, ]$precip, 
-                     dta_pau[dta_pau$cell_id %in% store_react$clickedMarker$id, ]$precip, main = 'Taylor diagram - GHCN and Pauling')
+      taylor.diagram(dta_ghcn[dta_ghcn$cell_id %in% store_react$clickedMarker$id, ]$precip_scale, 
+                     dta_pau[dta_pau$cell_id %in% store_react$clickedMarker$id, ]$precip_scale, main = 'Taylor diagram - GHCN and Pauling')
     })
     
     output$plot_taylor_owda<- renderPlot({
