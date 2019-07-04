@@ -20,7 +20,7 @@ colnames(meta_print) <- c('id', 'Long', 'Lat', 'Period', 'Season', 'N')
 dtb[, mov_var := zoo::rollapplyr(precip, 1:.N, mean), by = .(cell_id, season)]
 meta_print_owda <- 
   
-  dta[, precip_scale := scale(precip), .(cell_id, season)]# scaling precip data
+dta[, precip_scale := scale(precip), .(cell_id, season)]# scaling precip data
 dtb[, precip_scale := scale(precip), .(cell_id, season)]
 
 
@@ -123,13 +123,11 @@ server <- shinyServer(function(input, output) {
     # plot taylor diagram
     output$plot_taylor_paul<- renderPlot({
       taylor.diagram(dta_ghcn[dta_ghcn$cell_id %in% store_react$clickedMarker$id, ]$precip_scale, 
-                     dta_pau[dta_pau$cell_id %in% store_react$clickedMarker$id, ]$precip_scale, main = 'Taylor diagram - GHCN and Pauling')
-    })
+                     dta_pau[dta_pau$cell_id %in% store_react$clickedMarker$id, ]$precip_scale, sd.arcs=T, ref.sd=T)
     
-    output$plot_taylor_owda<- renderPlot({
       taylor.diagram(ghcn_owda_td[ghcn_owda_td$cell_id %in% store_react$clickedMarker$id, ]$precip_scale.y, 
                      ghcn_owda_td[ghcn_owda_td$cell_id %in% store_react$clickedMarker$id, ]$precip_scale.x, 
-                     main = 'Taylor diagram - GHCN and OWDA')
+                     add=TRUE,col="blue")
     })
     
     # plot ecdf 
