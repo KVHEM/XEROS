@@ -13,4 +13,8 @@ understanding of historical characterisation of large scale drought events and e
 atmospheric parameters influencing the genesis of droughts. Better understanding of the uncertainties in the past 
 will allow to project future hydroclimatic conditions across Europe more reliably.
 
+## Project wiki
+Visit the project [wiki](https://github.com/KVHEM/XEROS/wiki) to learn more about the project details, structure and workflow.
 
+## Scripting 
+For scripting we follow the general group [guidelines](https://github.com/KVHEM/how_we_work/blob/master/CONTRIBUTING.md). 
