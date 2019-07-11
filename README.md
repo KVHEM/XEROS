@@ -1,6 +1,6 @@
-Github repository for developing code used in XEROS project.
+#Github repository for developing code used in XEROS project.
 
-Project synopsis:
+##Project synopsis:
 
 Recent European droughts are mostly evaluated within the context of hydroclimatic conditions of the second 
 half of the 20th century. It is thus possible, that recent European drought events are less (or more) severe 
