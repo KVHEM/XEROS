@@ -1,67 +1,15 @@
-library(leaflet)
-library(shiny) 
-library(ggplot2)
-library(plyr)
 library(data.table)
-library(RDS)
+library(plyr)
+library(ggplot2)
+library(shiny) 
 library(plotrix)
+library(leaflet)
 
-#---------------load and prepare data---------------------
-dta <- readRDS(file = "../../data/input/ghcn_pauling.rds")
-pauling <- data.table(readRDS('../../data/input/gridded/pauling/pauling.rds')) 
+dta <- readRDS('../../data/other/norm_ghcn_paul_owda.rds')
+dta <- readRDS('../../Projects/2018XEROS/data/other/norm_ghcn_paul_owda.rds') #alternative path
 
-dta <- readRDS(file = "../../Projects/2018XEROS/data/input/ghcn_pauling.rds") #alternative path
-pauling <- data.table(readRDS('../../Projects/2018XEROS/data/input/gridded/pauling/pauling.rds')) #alternative path
-
-
-dtb <- pauling[cell_id %in% unique(dta$cell_id)]
-meta_print <- unique(dta[, c('cell_id', 'long', 'lat', 'period', 'season', 'n_val')] )
+meta_print <- unique(dta[, c('cell_id', 'long', 'lat', 'period', 'season', 'n_val')])
 colnames(meta_print) <- c('id', 'Long', 'Lat', 'Period', 'Season', 'N')
-dtb[, mov_var := zoo::rollapplyr(precip, 1:.N, mean), by = .(cell_id, season)]
-meta_print_owda <- 
-  
-dta[, precip_scale := scale(precip), .(cell_id, season)]# scaling precip data
-dtb[, precip_scale := scale(precip), .(cell_id, season)]
-
-
-owda <- data.table(readRDS('../../data/input/gridded/owda/owda_1000.rds'))
-owda <- data.table(readRDS('../../Projects/2018XEROS/data/input/gridded/owda/owda_1000.rds'))
-setnames(owda, old = 'Time', new = 'year')
-# owda grid corection
-east <- owda[,3] + 0.25
-orig <- owda
-owda[,Lon := NULL]
-owda <- cbind(east, owda)
-
-# creating cell_id based on transfering stations id into grid id
-grid_bounds <- readRDS('../../data/geodata/grid_cells.rds')
-grid_bounds <- readRDS('../../Projects/2018XEROS/data/geodata/grid_cells.rds')
-grid_bounds <- grid_bounds[1:5791, ]
-dtc <- grid_bounds[owda, .(cell_id, year, Lat, Lon, scPDSI), 
-                   on = .(lat_l <= Lat, lat_u > Lat,  
-                          long_l <= Lon, long_u > Lon)]
-# choosing only cells that are in dta
-dtc <- dtc[cell_id %in% dta$cell_id]
-
-dtc <- dtc[year >= 1697 & year <= 2000] # cutting owda years to be same time period as ghcn_pauling
-dtc[, season := factor('su')]
-dtc[, precip_scale := scale(scPDSI), cell_id] # scaling owda data separetly
-# renaming columns to be same as dta table for easier manipulation in shiny app
-setnames(dtc, old = c('Lon', 'Lat', 'scPDSI'), new = c('long', 'lat', 'precip')) 
-dtc[year < 1900, period := factor("pre_1900")] # creating periods
-dtc[year >= 1900, period := factor("aft_1900")]
-dtc[, dataset := factor('OWDA')]
-dtc[, n_val := .N, .(cell_id, season, period)]
-
-# cut dta to dtc because owda have smaller area
-dta <- dta[cell_id %in% dtc$cell_id]
-meta_print_owda <- meta_print[id %in% dtc$cell_id]
-
-dtc <- dtc[dta, .( cell_id, year, season, precip, long, lat, period, n_val, dataset, precip_scale), on = .(cell_id == cell_id, year == year)]
-dtc <- unique(dtc)
-
-# merge owda data with ghcn_pauling
-dta <- rbind(dta, dtc)
 
 # computing ecdf for both dta and owda
 ecdf_plot <- ddply(dta, .(cell_id, season, period, dataset), summarize,
@@ -72,19 +20,13 @@ ecdf_plot <- ddply(dta, .(cell_id, season, period, dataset), summarize,
 load("../../data/input/point/ghcn_meta_seas.rdata")
 ghcn_meta_seas[, id := NULL]
 setnames(ghcn_meta_seas, old = 'cell_id', new = 'id')
-meta_print<-merge(meta_print, ghcn_meta_seas, by='id')
+meta_print <- unique(dta[, c('cell_id', 'long', 'lat', 'period', 'season', 'n_val')])
+colnames(meta_print) <- c('id', 'Long', 'Lat', 'Period', 'Season', 'N')
 
-# spliting pauling and ghcn dataset
-split_list<- split(dta, f = dta$dataset)
-dta_pau <- as.data.table(split_list[[1]])
-dta_ghcn <- as.data.table(split_list[[2]])
+meta_print <- merge(meta_print, ghcn_meta_seas, by='id')
 
-# merge ghcn gata to owda for taylor diagram
-split_list_ghcn<- split(dta_ghcn, f = dta_ghcn$season)
-dta_ghcn_su <- as.data.table(split_list_ghcn[[3]])
-
-ghcn_owda_td <- merge(dtc, dta_ghcn_su, by = c ('year', 'cell_id'))
-
+to_plot_td <- dta[season == 'su']
+  
 # --------------user interface-------------
 ui <- fluidPage(fluidRow(
   leafletOutput('map')),
@@ -103,9 +45,9 @@ server <- shinyServer(function(input, output) {
   store_react <- reactiveValues(clickedMarker = NULL) # reactive values
   output$map <- renderLeaflet({
     leaflet() %>% addTiles() %>%
-      addCircleMarkers(lng = meta_print_owda$Long, 
-                       lat = meta_print_owda$Lat, 
-                       layerId = meta_print_owda$id, 
+      addCircleMarkers(lng = meta_print$Long, 
+                       lat = meta_print$Lat, 
+                       layerId = meta_print$id, 
                        color = 'lightslategrey' 
       ) 
   })
@@ -122,12 +64,16 @@ server <- shinyServer(function(input, output) {
     
     # plot taylor diagram
     output$plot_taylor_paul<- renderPlot({
-      taylor.diagram(dta_ghcn[dta_ghcn$cell_id %in% store_react$clickedMarker$id, ]$precip_scale, 
-                     dta_pau[dta_pau$cell_id %in% store_react$clickedMarker$id, ]$precip_scale, sd.arcs=T, ref.sd=T)
+      taylor.diagram(to_plot_td[to_plot_td$cell_id %in% store_react$clickedMarker$id & 
+                                  dataset == 'Pauling', ]$precip_scale, 
+                     to_plot_td[to_plot_td$cell_id %in% store_react$clickedMarker$id & 
+                                  dataset == 'GHCN', ]$precip_scale, sd.arcs = T, ref.sd = T)
     
-      taylor.diagram(ghcn_owda_td[ghcn_owda_td$cell_id %in% store_react$clickedMarker$id, ]$precip_scale.y, 
-                     ghcn_owda_td[ghcn_owda_td$cell_id %in% store_react$clickedMarker$id, ]$precip_scale.x, 
-                     add=TRUE,col="blue")
+      taylor.diagram(to_plot_td[to_plot_td$cell_id %in% store_react$clickedMarker$id & 
+                                 dataset == 'OWDA', ]$precip_scale, 
+                     to_plot_td[to_plot_td$cell_id %in% store_react$clickedMarker$id & 
+                                  dataset == 'GHCN', ]$precip_scale,  
+                     add = TRUE, col = "blue")
     })
     
     # plot ecdf 
@@ -148,27 +94,17 @@ server <- shinyServer(function(input, output) {
              facet_wrap(~season) +
              theme_bw())
     })
-    #plot whole reconstruction
-    output$plot_all <- renderPlot({
-      plot(ggplot(dtb[dtb$cell_id %in% store_react$clickedMarker$id, ], 
-                  aes(x = year, y = precip_scale)) + 
-             geom_line() +
-             facet_wrap(~season) +
-             theme_bw())
-    }) 
   })
 })
 
 #-------run shiny---------------------
 shinyApp(ui, server)
 
-precip[, precip_year := sum(precip), .(cell_id, dataset)]
-precip_su <- dta[season == 'su', .(dataset, cell_id, year, precip_scale)]
-precip <- dta[, .(dataset, cell_id, year, precip_year)]
+precip <- dta[, .(dataset, cell_id, year, precip)]
+precip[, precip := sum(precip), .(cell_id, dataset, year)]
 precip <- unique(precip)
-precip[, precip_z := scale(precip_year), .(dataset, cell_id)]
-precip[, precip_year := NULL]
-precip_taylor <- dcast(precip, ... ~ dataset, value.var = "precip_z")
+precip[, precip := scale(precip), .(dataset, cell_id)]
+precip_taylor <- dcast(precip, ... ~ dataset, value.var = "precip")
 taylor.diagram(precip_taylor$GHCN, precip_taylor$Pauling, sd.arcs=T, ref.sd=T)
 taylor.diagram(precip_taylor[year < 1900, GHCN], precip_taylor[year < 1900, Pauling], add = T, col = 'dark red')
 taylor.diagram(precip_taylor[year > 1900, GHCN], precip_taylor[year > 1900, Pauling], add = T, col = 'tomato3')
