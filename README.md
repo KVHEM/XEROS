@@ -29,5 +29,7 @@ For scripting we follow the general group [guidelines](https://github.com/KVHEM/
 
 ## Contact
 Principal Investigator CULS Prague: [Martin Hanel](mailto:hanel@fzp.czu.cz)  
+
 Principal Investigator UFZ: [Oldrich Rakovec](mailto:oldrich.rakovec@ufz.de)
-Repository Maintenance: [Yannis Markonis](mailto:markonis@fzp.czu.cz)  
+
+Repository Design/Maintenance: [Yannis Markonis](mailto:markonis@fzp.czu.cz)  
