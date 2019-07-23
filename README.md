@@ -16,13 +16,18 @@ will allow to project future hydroclimatic conditions across Europe more reliabl
 ## Members
 
 #### CULS Prague
-Martin Hanel (PI), Yannis Markonis, Petr Maca, Jan Kysely, Filip Strnad (PhD student), Vojtech Moravec (PhD student), Veronica Cejkova (Msc student)
+Martin Hanel, Yannis Markonis, Petr Maca, Jan Kysely, Filip Strnad (PhD student), Vojtech Moravec (PhD student), Veronica Cejkova (Msc student)
 
 #### UFZ
-Oldrich Rakovec (PI), Rohini Kumar, Stephan Thober, Luis Samaniego
+Oldrich Rakovec, Rohini Kumar, Stephan Thober, Luis Samaniego
 
 ## Project wiki
 Visit the project [wiki](https://github.com/KVHEM/XEROS/wiki) to learn more about the project details, structure and workflow.
 
 ## Scripting 
 For scripting we follow the general group [guidelines](https://github.com/KVHEM/how_we_work/blob/master/CONTRIBUTING.md). 
+
+## Contact
+Principal Investigator CULS Prague: [Martin Hanel](mailto:hanel@fzp.czu.cz)  
+Principal Investigator UFZ: [Oldrich Rakovec](mailto:oldrich.rakovec@ufz.de)
+Repository Maintenance: [Yannis Markonis](mailto:markonis@fzp.czu.cz)  
