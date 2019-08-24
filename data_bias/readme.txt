@@ -5,3 +5,5 @@ quantify_bias.R:    Picks Pauling gridded data that matches the GHNC stations an
 shiny_bias.R:       Shiny app that depicts empirical cumulative distribution function (ecdf) of GHNC and Pauling dataset and comparision of GHNC and Pauling dataset divided by pre 1900 and after 1900. Last figure depicts only Pauling timeseries from 1500 to 2000 in chosen station.
                     
 shiny_bias_norm.R:  Shiny app that depicts ecdf of GHNC, Pauling and OWDA dataset divided by pre 1900 and after 1900. Tyalor diagram that compares GHCN and Pauling (red) and GHCN and OWDA (blue). Last figure depicts scaled precipitation from OWDA, Pauling and GHNC dataset.
+
+map_bias_norm.R:  Computes variation of Pauling precipitation data between periods 1500 - 1600 and 1900 - 2000 in every grid point. Than is computed ratio between these two variations that is plotted into a map.
