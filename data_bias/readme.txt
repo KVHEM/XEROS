@@ -7,3 +7,5 @@ shiny_bias.R:       Shiny app that depicts empirical cumulative distribution fun
 shiny_bias_norm.R:  Shiny app that depicts ecdf of GHNC, Pauling and OWDA dataset divided by pre 1900 and after 1900. Tyalor diagram that compares GHCN and Pauling (red) and GHCN and OWDA (blue). Last figure depicts scaled precipitation from OWDA, Pauling and GHNC dataset.
 
 map_bias_norm.R:  Computes variation of Pauling precipitation data between periods 1500 - 1600 and 1900 - 2000 in every grid point. Than is computed ratio between these two variations that is plotted into a map.
+
+map_cor_bias.R: Computes cross-correlation between luterbacher and CRU temperature data and pauling and CRU precipitation data. Both time series are between 1900-2000. 
