@@ -26,7 +26,8 @@ colnames(meta_print) <- c('id', 'Long', 'Lat', 'Period', 'Season', 'N')
 meta_print <- merge(meta_print, ghcn_meta_seas, by='id')
 
 to_plot_td <- dta[season == 'su']
-  
+
+
 # --------------user interface-------------
 ui <- fluidPage(fluidRow(
   leafletOutput('map')),
@@ -64,16 +65,20 @@ server <- shinyServer(function(input, output) {
     
     # plot taylor diagram
     output$plot_taylor_paul<- renderPlot({
-      taylor.diagram(to_plot_td[to_plot_td$cell_id %in% store_react$clickedMarker$id & 
-                                  dataset == 'Pauling', ]$precip_scale, 
-                     to_plot_td[to_plot_td$cell_id %in% store_react$clickedMarker$id & 
-                                  dataset == 'GHCN', ]$precip_scale, sd.arcs = T, ref.sd = T)
-    
-      taylor.diagram(to_plot_td[to_plot_td$cell_id %in% store_react$clickedMarker$id & 
-                                 dataset == 'OWDA', ]$precip_scale, 
-                     to_plot_td[to_plot_td$cell_id %in% store_react$clickedMarker$id & 
-                                  dataset == 'GHCN', ]$precip_scale,  
-                     add = TRUE, col = "blue")
+      
+      same_length_1 <- merge(to_plot_td[to_plot_td$cell_id %in% store_react$clickedMarker$id & 
+                                        dataset == 'Pauling'], 
+                           to_plot_td[to_plot_td$cell_id %in% store_react$clickedMarker$id & 
+                                        dataset == 'GHCN'], by = 'year')
+      
+      same_length_2 <- merge(to_plot_td[to_plot_td$cell_id %in% store_react$clickedMarker$id & 
+                                          dataset == 'OWDA'], 
+                             to_plot_td[to_plot_td$cell_id %in% store_react$clickedMarker$id & 
+                                          dataset == 'GHCN'], by = 'year')
+      
+      taylor.diagram(same_length_1$precip_scale.x, same_length_1$precip_scale.y, sd.arcs = T, ref.sd = T)
+      
+      taylor.diagram(same_length_2$precip_scale.x, same_length_2$precip_scale.y, add = TRUE, col = "blue")
     })
     
     # plot ecdf 
