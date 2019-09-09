@@ -157,7 +157,7 @@ p4 <- ggplot(data = world) +
   theme(panel.background = element_rect(fill = '#999999')) +
   theme_bw()
 
-gg <- grid.arrange(p1,p2,p3,p4, nrow = 2, top = 'Cross-correlation between Pauling and CRU precipitaion data')
+gg <- grid.arrange(p1,p2,p3,p4, nrow = 2, top = 'Cross-correlation between Pauling and CRU precipitation data')
 ggsave("../../results/bias/cor_precip.pdf", gg)
 
 p5 <- ggplot(data = world) +
