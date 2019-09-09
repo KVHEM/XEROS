@@ -1,22 +1,22 @@
-
 library(data.table)
 library(maps)
 library(rnaturalearth)
 library(rnaturalearthdata)
 library(ggplot2)
 library(sf)
+library(dplyr)
+library(gridExtra)
 
 world <- ne_countries(scale = "medium", returnclass = "sf")
-class(world)
 
 #-------function that compute cross correlation and give max value and lag------------
-Find_Max_CCF<- function(a,b) 
+Find_Max_CCF <- function(a, b) 
 { 
   d <- ccf(a, b, plot = FALSE) 
-  cor = d$acf[,,1] 
-  lag = d$lag[,,1] 
-  res = data.table(cor,lag) 
-  res_max = res[which.max(res$cor),] 
+  cor = d$acf[, , 1] 
+  lag = d$lag[, , 1] 
+  res = data.table(cor, lag) 
+  res_max = res[which.max(res$cor), ] 
   return(res_max) 
 }
 
@@ -32,7 +32,8 @@ CRU <- CRU[complete.cases(CRU)]
 pauling2 <- as.data.table(readRDS('../../data/input/gridded/pauling/pauling.rds'))
 raster_template <- pauling2[, c('precip', 'year', 'season') := NULL]
 raster_template <- raster_template %>% distinct(cell_id, .keep_all = TRUE) #only one raster layer
-
+raster_template <- raster_template[, .(cell_id, lat, long)]
+  
 CRU[, cell_id := NULL]  # making sure that cell_id and dimension match
 CRU <- merge(CRU, raster_template, by = c('long', 'lat'))
 luterbacher[, cell_id := NULL]
@@ -92,36 +93,72 @@ ccorr_au_temp <- merge(ccorr_au_temp, raster_template, by = 'cell_id')
 
 
 #----------map output-------------
+world <- ne_countries(scale = "medium", returnclass = "sf")
+palette_RdBu = colorRampPalette(rev(c('#d73027','#f46d43','#fdae61','#fee090','#fef0d9','#e0f3f8','#abd9e9','#74add1','#4575b4')), space = "rgb")
+
 p1 <- ggplot(data = world) +
-  stat_summary_2d(data = ccorr_wi_precip, aes(x = lat, y =long, z = a.cor))  + 
+  stat_summary_2d(data = ccorr_wi_precip, aes(x = long, y = lat, z = a.cor))  + 
   geom_sf(color="white", fill=NA) +
-  coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
-  labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Winter')+
-  theme(panel.background = element_rect(fill = '#999999'))
+  coord_sf(xlim = c(-15, 40), ylim = c(35, 71), expand = FALSE)+
+  labs(fill = 'Ratio', title = 'Winter')+
+  scale_fill_gradientn(colours = palette_RdBu(100),
+                       limits = c(0, 1),
+                       breaks = seq(0, 1, 0.2),
+                       guide = guide_colorbar(nbin = 20,
+                                              title.position = "bottom",
+                                              title.hjust = 0.5, 
+                                              raster = TRUE)) + 
+  theme(panel.background = element_rect(fill = '#999999')) +
+  theme_bw()
 
 
 p2 <- ggplot(data = world) +
-  stat_summary_2d(data = ccorr_sp_precip, aes(x=lat, y=long, z = a.cor))  + 
+  stat_summary_2d(data = ccorr_sp_precip, aes(x = long, y = lat, z = a.cor))  + 
   geom_sf(color="white", fill=NA) +
-  coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
-  labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Spring')+
-  theme(panel.background = element_rect(fill = '#999999'))
+  coord_sf(xlim = c(-15, 40), ylim = c(35, 71), expand = FALSE)+
+  labs(fill = 'Ratio', title = 'Spring')+
+  scale_fill_gradientn(colours = palette_RdBu(100),
+                       limits = c(0, 1),
+                       breaks = seq(0, 1, 0.2),
+                       guide = guide_colorbar(nbin = 20,
+                                              title.position = "bottom",
+                                              title.hjust = 0.5, 
+                                              raster = TRUE)) + 
+  theme(panel.background = element_rect(fill = '#999999')) +
+  theme_bw()
 
 p3 <- ggplot(data = world) +
-  stat_summary_2d(data = ccorr_su_precip, aes(x=lat, y=long, z = a.cor))  + 
+  stat_summary_2d(data = ccorr_su_precip, aes(x = long, y = lat, z = a.cor))  + 
   geom_sf(color="white", fill=NA) +
-  coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
-  labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Summer')+
-  theme(panel.background = element_rect(fill = '#999999'))
+  coord_sf(xlim = c(-15, 40), ylim = c(35, 71), expand = FALSE)+
+  labs(fill = 'Ratio', title = 'Summer')+
+  scale_fill_gradientn(colours = palette_RdBu(100),
+                       limits = c(0, 1),
+                       breaks = seq(0, 1, 0.2),
+                       guide = guide_colorbar(nbin = 20,
+                                              title.position = "bottom",
+                                              title.hjust = 0.5, 
+                                              raster = TRUE)) + 
+  theme(panel.background = element_rect(fill = '#999999')) +
+  theme_bw()
 
 p4 <- ggplot(data = world) +
-  stat_summary_2d(data = ccorr_au_precip, aes(x=lat, y=long, z = a.cor))  + 
+  stat_summary_2d(data = ccorr_au_precip, aes(x = long, y = lat, z = a.cor))  + 
   geom_sf(color="white", fill=NA) +
-  coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
-  labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Autumn')+
-  theme(panel.background = element_rect(fill = '#999999'))
+  coord_sf(xlim = c(-15, 40), ylim = c(35, 71), expand = FALSE)+
+  labs(fill = 'Ratio', title = 'Autumn')+
+  scale_fill_gradientn(colours = palette_RdBu(100),
+                       limits = c(0, 1),
+                       breaks = seq(0, 1, 0.2),
+                       guide = guide_colorbar(nbin = 20,
+                                              title.position = "bottom",
+                                              title.hjust = 0.5, 
+                                              raster = TRUE)) + 
+  theme(panel.background = element_rect(fill = '#999999')) +
+  theme_bw()
 
-grid.arrange(p1,p2,p3,p4, nrow = 2, top = 'Cross-correlation between Pauling and CRU precipitaion data')
+gg <- grid.arrange(p1,p2,p3,p4, nrow = 2, top = 'Cross-correlation between Pauling and CRU precipitaion data')
+ggsave("../../results/bias/cor_precip.pdf", gg)
 
 p5 <- ggplot(data = world) +
   stat_summary_2d(data = ccorr_wi_temp, aes(x = lat, y =long, z = a.cor))  + 

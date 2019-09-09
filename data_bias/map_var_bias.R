@@ -1,4 +1,3 @@
-
 library(data.table)
 library(dplyr)
 library(ggplot2)
@@ -8,8 +7,6 @@ library(rnaturalearthdata)
 library(tmap)
 library(maps)
 library(gridExtra)
-
-
 
 #----------load pauling data--------
 
