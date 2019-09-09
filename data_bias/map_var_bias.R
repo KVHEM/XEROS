@@ -64,39 +64,69 @@ var_au[, ratio := var_au$au_old / var_au$au_new]
 
 
 #--------map output---------------------------------------
-
 world <- ne_countries(scale = "medium", returnclass = "sf")
-class(world)
-
+palette_RdBu = colorRampPalette(rev(c('#d73027','#f46d43','#fdae61','#fee090','#fef0d9','#e0f3f8','#abd9e9','#74add1','#4575b4')), space = "rgb")
 
 p1 <- ggplot(data = world) +
-        stat_summary_2d(data=var_wi, aes(x=lat, y=long, z = var_wi$ratio),  bins = 80)  + 
-        geom_sf(color="white", fill=NA) +
-        coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
-        labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Winter')+
-        theme(panel.background = element_rect(fill = '#999999'))
+  scale_fill_gradientn(colours = palette_RdBu(100),
+                       limits = c(0, 1),
+                       breaks = seq(0, 1, 0.2),
+                       guide = guide_colorbar(nbin = 20,
+                                              title.position = "bottom",
+                                              title.hjust = 0.5, 
+                                              raster = TRUE)) + 
+  stat_summary_2d(data = var_wi, aes(x = long, y = lat, z = var_wi$ratio), bins = 80)  + 
+  geom_sf(color = "white", fill = NA) +
+  coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
+  labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Winter')+
+  theme(panel.background = element_rect(fill = '#999999')) +
+  theme_bw()
   
 p2 <- ggplot(data = world) +
-        stat_summary_2d(data=var_sp, aes(x=lat, y=long, z = var_sp$ratio),  bins = 80)  + 
-        geom_sf(color="white", fill=NA) +
-        coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
-        labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Spring')+
-        theme(panel.background = element_rect(fill = '#999999'))
+  scale_fill_gradientn(colours = palette_RdBu(100),
+                       limits = c(0, 1),
+                       breaks = seq(0, 1, 0.2),
+                       guide = guide_colorbar(nbin = 20,
+                                              title.position = "bottom",
+                                              title.hjust = 0.5, 
+                                              raster = TRUE)) + 
+  stat_summary_2d(data = var_sp, aes(x = long, y = lat, z = var_sp$ratio), bins = 80)  + 
+  geom_sf(color = "white", fill = NA) +
+  coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
+  labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Spring')+
+  theme(panel.background = element_rect(fill = '#999999')) +
+  theme_bw()
 
 p3 <- ggplot(data = world) +
-        stat_summary_2d(data=var_su, aes(x=lat, y=long, z = var_su$ratio),  bins = 80)  + 
-        geom_sf(color="white", fill=NA) +
-        coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
-        labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Summer')+
-        theme(panel.background = element_rect(fill = '#999999'))
+  scale_fill_gradientn(colours = palette_RdBu(100),
+                       limits = c(0, 1),
+                       breaks = seq(0, 1, 0.2),
+                       guide = guide_colorbar(nbin = 20,
+                                              title.position = "bottom",
+                                              title.hjust = 0.5, 
+                                              raster = TRUE)) + 
+  stat_summary_2d(data = var_su, aes(x = long, y = lat, z = var_su$ratio), bins = 80)  + 
+  geom_sf(color = "white", fill = NA) +
+  coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
+  labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Summer')+
+  theme(panel.background = element_rect(fill = '#999999')) +
+  theme_bw()
 
 p4 <- ggplot(data = world) +
-        stat_summary_2d(data=var_au, aes(x=lat, y=long, z = var_au$ratio),  bins = 80)  + 
-        geom_sf(color="white", fill=NA) +
-        coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
-        labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Autumn')+
-        theme(panel.background = element_rect(fill = '#999999'))
+  scale_fill_gradientn(colours = palette_RdBu(100),
+                       limits = c(0, 1),
+                       breaks = seq(0, 1, 0.2),
+                       guide = guide_colorbar(nbin = 20,
+                                              title.position = "bottom",
+                                              title.hjust = 0.5, 
+                                              raster = TRUE)) + 
+  stat_summary_2d(data = var_au, aes(x = long, y = lat, z = var_au$ratio), bins = 80)  + 
+  geom_sf(color = "white", fill = NA) +
+  coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
+  labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Autumn')+
+  theme(panel.background = element_rect(fill = '#999999')) +
+  theme_bw()
 
-grid.arrange(p1,p2,p3,p4, nrow = 2, top = 'Ratio between variance of precipitation data')
-
+gg <- grid.arrange(p1, p2, p3, p4, nrow = 2, top = 'Variance ratio between 1500-1600 & 1900-2000')
+ggsave("../../results/bias/var_1500_1600.pdf", gg)
 
