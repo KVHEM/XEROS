@@ -97,67 +97,40 @@ world <- ne_countries(scale = "medium", returnclass = "sf")
 palette_RdBu = colorRampPalette(rev(c('#d73027','#f46d43','#fdae61','#fee090','#fef0d9','#e0f3f8','#abd9e9','#74add1','#4575b4')), space = "rgb")
 
 p1 <- ggplot(data = world) +
-  stat_summary_2d(data = ccorr_wi_precip, aes(x = long, y = lat, z = a.cor))  + 
+  stat_summary_2d(data = ccorr_wi_precip, aes(x=lat, y=long, z = a.cor))  + 
   geom_sf(color="white", fill=NA) +
   coord_sf(xlim = c(-15, 40), ylim = c(35, 71), expand = FALSE)+
-  labs(fill = 'Ratio', title = 'Winter')+
-  scale_fill_gradientn(colours = palette_RdBu(100),
-                       limits = c(0, 1),
-                       breaks = seq(0, 1, 0.2),
-                       guide = guide_colorbar(nbin = 20,
-                                              title.position = "bottom",
-                                              title.hjust = 0.5, 
-                                              raster = TRUE)) + 
-  theme(panel.background = element_rect(fill = '#999999')) +
-  theme_bw()
+  labs(x = 'Latitude', y = 'Longitude', fill = 'C-corr', title = 'Winter')+
+  theme(panel.background = element_rect(fill = '#999999'))
+
 
 
 p2 <- ggplot(data = world) +
-  stat_summary_2d(data = ccorr_sp_precip, aes(x = long, y = lat, z = a.cor))  + 
+  stat_summary_2d(data = ccorr_sp_precip, aes(x=lat, y=long, z = a.cor))  + 
   geom_sf(color="white", fill=NA) +
   coord_sf(xlim = c(-15, 40), ylim = c(35, 71), expand = FALSE)+
-  labs(fill = 'Ratio', title = 'Spring')+
-  scale_fill_gradientn(colours = palette_RdBu(100),
-                       limits = c(0, 1),
-                       breaks = seq(0, 1, 0.2),
-                       guide = guide_colorbar(nbin = 20,
-                                              title.position = "bottom",
-                                              title.hjust = 0.5, 
-                                              raster = TRUE)) + 
-  theme(panel.background = element_rect(fill = '#999999')) +
-  theme_bw()
+  labs(x = 'Latitude', y = 'Longitude', fill = 'C-corr', title = 'Spring')+
+  theme(panel.background = element_rect(fill = '#999999'))
+
 
 p3 <- ggplot(data = world) +
-  stat_summary_2d(data = ccorr_su_precip, aes(x = long, y = lat, z = a.cor))  + 
+  stat_summary_2d(data = ccorr_su_precip, aes(x=lat, y=long, z = a.cor))  + 
   geom_sf(color="white", fill=NA) +
   coord_sf(xlim = c(-15, 40), ylim = c(35, 71), expand = FALSE)+
-  labs(fill = 'Ratio', title = 'Summer')+
-  scale_fill_gradientn(colours = palette_RdBu(100),
-                       limits = c(0, 1),
-                       breaks = seq(0, 1, 0.2),
-                       guide = guide_colorbar(nbin = 20,
-                                              title.position = "bottom",
-                                              title.hjust = 0.5, 
-                                              raster = TRUE)) + 
-  theme(panel.background = element_rect(fill = '#999999')) +
-  theme_bw()
+  labs(x = 'Latitude', y = 'Longitude', fill = 'C-corr', title = 'Summer')+
+  theme(panel.background = element_rect(fill = '#999999'))
+
 
 p4 <- ggplot(data = world) +
-  stat_summary_2d(data = ccorr_au_precip, aes(x = long, y = lat, z = a.cor))  + 
+  stat_summary_2d(data = ccorr_au_precip, aes(x=lat, y=long, z = a.cor))  + 
   geom_sf(color="white", fill=NA) +
   coord_sf(xlim = c(-15, 40), ylim = c(35, 71), expand = FALSE)+
-  labs(fill = 'Ratio', title = 'Autumn')+
-  scale_fill_gradientn(colours = palette_RdBu(100),
-                       limits = c(0, 1),
-                       breaks = seq(0, 1, 0.2),
-                       guide = guide_colorbar(nbin = 20,
-                                              title.position = "bottom",
-                                              title.hjust = 0.5, 
-                                              raster = TRUE)) + 
-  theme(panel.background = element_rect(fill = '#999999')) +
-  theme_bw()
+  labs(x = 'Latitude', y = 'Longitude', fill = 'C-corr', title = 'Autumn')+
+  theme(panel.background = element_rect(fill = '#999999'))
 
-gg <- grid.arrange(p1,p2,p3,p4, nrow = 2, top = 'Cross-correlation between Pauling and CRU precipitation data')
+
+grid.arrange(p1,p2,p3,p4, nrow = 2, top = 'Cross-correlation between Pauling and CRU precipitation data')
+
 ggsave("../../results/bias/cor_precip.pdf", gg)
 
 p5 <- ggplot(data = world) +
