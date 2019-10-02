@@ -1,14 +1,19 @@
+source('./code/main.R')
+
 library(ncdf4)
-library(ggplot2)
-library(data.table)
 library(RDS)
 
 #-----------read .nc file from working directory-------------
-ncpath <- '../../data/input/gridded/pauling/'  # directory of .nc file
-#ncpath <- "../../Projects/2018XEROS/data/input/gridded/pauling/" Secondary path
 
+#Can be found here:
+#ftp://ftp.ncdc.noaa.gov/pub/data/paleo/historical/europe/pauling2006precip/
+#But already transformed in netcdf format in Hanel et al. 2018 
+#So it should be downloaded here see issues #29-30
+
+ncpath <- '../../data/input/gridded/pauling/'  
+ncpath <- '../../Projects/2018XEROS/data/input/gridded/pauling/'  #alternative path
 ncname <- 'pauling'  
-ncfname <- paste(ncpath, ncname, '.nc', sep='')
+ncfname <- paste(ncpath, ncname, '.nc', sep = '')
 ncin <- nc_open(ncfname)
 
 #---------prepare data-----------------
@@ -36,7 +41,7 @@ for (i in 1:length(time_logs)) {
    precip_slice <- precip_array[, , i]   # creating array with one year and one season values
    precip_vec <- as.vector(precip_slice)
    dt <- as.data.table(cbind(precip_vec, lonlat))
-   setnames(dt, old = c('precip_vec', 'Var1', 'Var2'), new = c('precip', 'lat', 'long'))
+   setnames(dt, old = c('precip_vec', 'Var1', 'Var2'), new = c('precip', 'lon', 'lat'))
    dt[, year := year [, i]]
    dt[, season := season [, i]]
    dt[, cell_id := cell_id]
@@ -56,26 +61,27 @@ pauling[, season := factor(season, levels =  c('wi', 'sp', 'su', 'au'))]
 pauling <- pauling[complete.cases(pauling)]
 
 #-------date format time logs--------
-pauling[ season == 'wi', mo:=1]    
-pauling[ season == 'au', mo:=10]
-pauling[ season == 'sp', mo:=4]
-pauling[ season == 'su', mo:=7]
+pauling[season == 'wi', mo := 1]    
+pauling[season == 'au', mo := 10]
+pauling[season == 'sp', mo := 4]
+pauling[season == 'su', mo := 7]
 pauling[, day:= factor(15)]
 pauling[, time := NA]
-pauling$time <- as.Date(with(pauling, paste(year, mo, day,sep="-")), "%Y-%m-%d")
+pauling$time <- as.Date(with(pauling, paste(year, mo, day,sep = "-")), "%Y-%m-%d")
 pauling[, mo := NULL]
 pauling[, day := NULL]
 head(pauling)
 
 #---------save to RDS -----------
-
-saveRDS(pauling, '../../data/input/gridded/pauling/pauling.rds')
+dir.create('./data/input/gridded/pauling/')
+fname <- './data/input/gridded/pauling/pauling.rds'
+saveRDS(pauling, fname)
 
 #------------validate-----------
-pauling <- readRDS('../../data/input/gridded/pauling/pauling.rds')
+pauling <- readRDS(fname)
 
-try <- paul[year == 1800] #change
-ggplot(try, aes(x = long, y = lat, fill = precip)) +
+try <- pauling[year == 1800] #change
+ggplot(try, aes(x = lon, y = lat, fill = precip)) +
   geom_tile() +
   scale_fill_gradient(low = "deepskyblue", high = 'dark red', na.value = "navyblue") + 
   facet_grid(season ~ year) +

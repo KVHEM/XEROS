@@ -1,10 +1,10 @@
-source('./main.R')
+source('./code/main.R')
 
 library(readtext)
 library(lubridate)
 library(magrittr)
 
-data_dir <- '../data/input/gridded/luterbacher/'
+data_dir <- './data/input/gridded/luterbacher/'
 dir.create(data_dir)
 dload_path <- paste0(data_dir, 'raw/')
 dir.create(dload_path)
