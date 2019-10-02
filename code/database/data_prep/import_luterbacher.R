@@ -35,8 +35,8 @@ luterbacher[, paste0('Var12', 1:2) := tstrsplit(Var12, '.t')]
 luterbacher[, Var12:=NULL]
 luterbacher[, Var122 := NULL]
 setnames(luterbacher, old = c("value", 'Var112', 'Var121', 'Var2'), new = c("temp", 'year', 'season', 'cell_id'))
-luterbacher[, lon := rep(seq(-24.75, 39.75, 0.5), each = num_of_files, 70)]  #latilude based on given order after melt
-luterbacher[, lat := rep(seq(69.75, 35.25, -0.5), each = 130 * num_of_files)]  #longitude based on given order after melt
+luterbacher[, lon := rep(seq(-24.75, 39.75, 0.5), each = num_of_files, 70)]  #longitude based on given order after melt
+luterbacher[, lat := rep(seq(69.75, 35.25, -0.5), each = 130 * num_of_files)]  #latilude based on given order after melt
 luterbacher[luterbacher == -999.99] <- NA   # -999.99 to NA values
 luterbacher[, season := factor(season, levels =  c('wi', 'sp', 'su', 'au'))] 
 luterbacher[, temp_yr := mean(temp), .(year, cell_id)]
