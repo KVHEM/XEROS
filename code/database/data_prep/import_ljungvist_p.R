@@ -51,6 +51,6 @@ leaflet() %>% addTiles() %>%
   addMarkers(melt_meta_id$lon, melt_meta_id$lat, popup = melt_meta_id$name)
 
 #--------------------save--------------------------------
-saveRDS(melt_data, file = paste0(dir_name, 'ljungvist.rds'))
-saveRDS(melt_meta, file = paste0(dir_name, 'ljungvist_meta.rds'))
-saveRDS(melt_meta_id, file = paste0(dir_name, 'ljungvist_meta_eu_grid.rds'))
+saveRDS(melt_data, file = paste0(dir_name, 'ljungvist_p.rds'))
+saveRDS(melt_meta, file = paste0(dir_name, 'ljungvist_p_meta.rds'))
+saveRDS(melt_meta_id, file = paste0(dir_name, 'ljungvist_p_meta_eu_grid.rds'))

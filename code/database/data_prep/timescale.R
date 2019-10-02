@@ -162,8 +162,7 @@ setnames(pages_5yr, old = c('V1.x', 'V1.y'),
 pages_5yr$avg_5yr <- as.numeric(pages_5yr$avg_5yr)
 pages_5yr$avg_annual <- as.numeric(pages_5yr$avg_annual)
 
-
-#------------save RDS file-----------------------
+#------------save RDS files-----------------------
 saveRDS(pauling_10yr, './data/input/gridded/pauling/pauling_10yr.rds')
 saveRDS(pauling_5yr, './data/input/gridded/pauling/pauling_5yr.rds')
 saveRDS(luterbacher_10yr, './data/input/gridded/luterbacher/luterbacher_10yr.rds')

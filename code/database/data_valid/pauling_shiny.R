@@ -1,20 +1,16 @@
-library(RDS)
+source('./code/main.R')
 library(shiny)
-library(data.table)
 library(leaflet)
 library(raster)
-library(ggplot2)
-
 
 #----------load data--------------
-pauling <- as.data.table(readRDS('../../data/input/gridded/pauling/pauling.rds'))
-#pauling <- readRDS("../../Projects/2018XEROS/data/input/gridded/pauling/pauling.rds")   #secondary path 
+pauling <- as.data.table(readRDS('./data/input/gridded/pauling/pauling.rds'))
 
-pauling[, precip_z := scale(precip), .(season, lat, long)]
+pauling[, precip_z := scale(precip), .(season, lat, lon)]
 
 #-------------time series markers grid--------------
 one_layer <- pauling[year == 1500 & season =='wi']
-grid_id <- one_layer [,c('long', 'lat', 'cell_id')]
+grid_id <- one_layer [,c('lon', 'lat', 'cell_id')]
 
 #--------------user interface------------------
 ui<- fluidPage(titlePanel('Seasonal precipitation data - Pauling'),
@@ -37,7 +33,7 @@ server <- shinyServer(function(input, output) {
   subset_data <- eventReactive(input$btn, {                 # map with Run button  
     data_year <- pauling[year == input$chosen_year]          # input year data table filter
     data_seas <- data_year[season == input$seas]             # input season data table filter
-    data_cut <- data_seas[, c('long', 'lat',  'precip_z')] 
+    data_cut <- data_seas[, c('lon', 'lat',  'precip_z')] 
     raster_data <- rasterFromXYZ(data_cut, crs = '+proj=longlat +datum=WGS84')  # convert to raster (only X Y Z input)
     return(raster_data)
    })
@@ -47,7 +43,7 @@ server <- shinyServer(function(input, output) {
                             values(subset_data()$precip_z), na.color = "transparent")  #colour palet
     leaflet()%>% addTiles()%>%    
     addRasterImage(subset_data(), colors = col_pal, opacity = 0.8,  group = 'Raster')%>%
-    addAwesomeMarkers(grid_id$long, grid_id$lat,  group = 'Clickable time series',
+    addAwesomeMarkers(grid_id$lon, grid_id$lat,  group = 'Clickable time series',
                       options = markerOptions(opacity = 0), layerId = grid_id$cell_id)%>% 
     addLegend(pal = col_pal, values = values(subset_data()$precip_z), title = "Precip. (z-score)")%>%
     addLayersControl(baseGroups = 'Raster', overlayGroups = 'Clickable time series', options = layersControlOptions(collapsed = FALSE)) # turn off marker layer to make quicker leaflet reaction  

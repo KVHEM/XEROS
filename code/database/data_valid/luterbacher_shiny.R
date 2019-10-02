@@ -1,20 +1,17 @@
-library(RDS)
+source('./code/main.R')
 library(shiny)
-library(data.table)
 library(leaflet)
 library(raster)
-library(ggplot2)
-
 
 #----------load data--------------
-luter <- as.data.table(readRDS('../../data/input/gridded/luterbacher/luterbacher.rds'))
+luter <- as.data.table(readRDS('./data/input/gridded/luterbacher/luterbacher.rds'))
 luter <- as.data.frame(luter)  # change format of year to numeic
 luter[,3] <- sapply(luter[,3],as.numeric)
 luter <- as.data.table(luter)
 
 #-------------time series markers grid--------------
-one_layer <- luter[year == 1500 & season =='wi']
-grid_id <- one_layer [,c('long', 'lat', 'cell_id')]
+one_layer <- luter[year == 1500 & season == 'wi']
+grid_id <- one_layer [,c('lon', 'lat', 'cell_id')]
 
 #--------------user interface------------------
 ui<- fluidPage(titlePanel('Seasonal temperature data - Luterbacher'),
@@ -37,7 +34,7 @@ server <- shinyServer(function(input, output) {
   subset_data <- eventReactive(input$btn, {                 # map with Run button  
     data_year <- luter[year == input$chosen_year]          # input year data table filter
     data_seas <- data_year[season == input$seas]             # input season data table filter
-    data_cut <- data_seas[, c('long', 'lat',  'temp')] 
+    data_cut <- data_seas[, c('lon', 'lat',  'temp')] 
     raster_data <- rasterFromXYZ(data_cut, crs = '+proj=longlat +datum=WGS84')  # convert to raster (only X Y Z input)
     return(raster_data)
   })
@@ -47,7 +44,7 @@ server <- shinyServer(function(input, output) {
                             values(subset_data()$temp), na.color = "transparent")  #colour palet
     leaflet()%>% addTiles()%>%    
       addRasterImage(subset_data(), colors = col_pal, opacity = 0.8,  group = 'Raster')%>%
-      addAwesomeMarkers(grid_id$long, grid_id$lat,  group = 'Clickable time series',
+      addAwesomeMarkers(grid_id$lon, grid_id$lat,  group = 'Clickable time series',
                         options = markerOptions(opacity = 0), layerId = grid_id$cell_id)%>% 
       addLegend(pal = col_pal, values = values(subset_data()$temp), title = "Temperature")%>%
       addLayersControl(baseGroups = 'Raster', overlayGroups = 'Clickable time series', options = layersControlOptions(collapsed = FALSE)) # turn off marker layer to make quicker leaflet reaction  
@@ -63,7 +60,7 @@ server <- shinyServer(function(input, output) {
         geom_vline(xintercept = unique(luter[year == input$chosen_year]$year), col = 'red') +
         facet_wrap(~season) +
         theme_bw() + 
-        ggtitle(paste('Seasonal temperature in long:',store_react$clickedMarker$lng,
+        ggtitle(paste('Seasonal temperature in lon:',store_react$clickedMarker$lng,
                       ' lat:',store_react$clickedMarker$lat ))+ # print clicked tile as header
         ylab('Temp. (°C)') + 
         xlab('Year')

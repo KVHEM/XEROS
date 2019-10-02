@@ -1,20 +1,19 @@
+source('./code/main.R')
+
 library(leaflet)
 library(shiny) 
-library(ggplot2)
 
 #---------------load data---------------------
-#ljungvist_ts <- readRDS("../../Projects/2018XEROS/data/input/point/ljungvist_eu.rds")   #secondary path 
-#ljungvist_meta <- readRDS("../../Projects/2018XEROS/data/input/point/ljungvist_eu_meta.rds") #secondary path
-ljungvist_ts <- readRDS("../../data/input/point/ljungvist_t.rds")
-ljungvist_meta <- readRDS("../../data/input/point/ljungvist_t_meta.rds")
+ljungvist_ts <- readRDS("./data/input/point/ljungqvist_t/ljungvist_t.rds")
+ljungvist_meta <- readRDS("./data/input/point/ljungqvist_t/ljungvist_t_meta.rds")
 
-ids_eu <- ljungvist_meta[long > -20 & long < 40 & lat > 35 & lat < 70, id]
+ids_eu <- ljungvist_meta[lon > -20 & lon < 40 & lat > 35 & lat < 70, id]
 ljungvist_ts <- ljungvist_ts[id %in% ids_eu]
 ljungvist_meta <- ljungvist_meta[id %in% ids_eu]
 
 # -----------prepare data for printing---------------
-meta_print <- ljungvist_meta[,c('name', 'id', 'long', 'lat', 'proxy')] 
-colnames(meta_print) <- c('Name', 'id', 'Long', 'Lat', 'Proxy')
+meta_print <- ljungvist_meta[,c('name', 'id', 'lon', 'lat', 'proxy')] 
+colnames(meta_print) <- c('Name', 'id', 'Lon', 'Lat', 'Proxy')
 #colour palette for legend and markers
 pal <- colorFactor(palette = c('red', 'blue', 'orange','green'), domain = meta_print$Proxy) 
 
@@ -30,7 +29,7 @@ server <- shinyServer(function(input, output) {
   store_react <- reactiveValues(clickedMarker = NULL) # reactive values
   output$map <- renderLeaflet({
     leaflet() %>% addTiles() %>%
-      addCircleMarkers(lng =meta_print$Long, lat = meta_print$Lat, 
+      addCircleMarkers(lng =meta_print$Lon, lat = meta_print$Lat, 
                        layerId = meta_print$id, color = pal(meta_print$Proxy)) %>%
       addLegend('topleft', pal = pal, values = meta_print$Proxy)
   })
