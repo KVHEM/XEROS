@@ -15,7 +15,9 @@ import_cru_ts.R : Rearranges and saves CRU TS 4.01 version of gridded P, T and P
                   PET: monthly values (mm/day) values were averaged for the season in (mm/day)
                   P: monthly values (mm/month) values were summed for the season in (mm/season)
                   T: near surface averaged monthly temperature (°C) were averaged for the season
-                  
+
+grid_cells.R : Creates a data.table with the boundaries (lat, lon) for each grid cell.
+             
 import_pages.R : Imports PAGES2k v2.0.0 temperature reconstruction and transform it from list to tidy format. 
 Creates metadata file for all station called pages2k_meta and metadata file called pages2k_meta_id that is only for stations in Europe that are connected to grid cell by id.
 
