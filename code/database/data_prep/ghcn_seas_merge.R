@@ -1,9 +1,8 @@
-library(data.table)
-library(RDS)
+source('./code/main.R')
 
 #---------load data----------------
-daily <- as.data.table(readRDS('../../data/input/point/ghcn_daily_p.rds'))
-monthly <- as.data.table(readRDS('../../data/input/point/ghcn_monthly_p.rds'))
+daily <- as.data.table(readRDS('./data/input/point/ghcn/ghcn_daily_p.rds'))
+monthly <- as.data.table(readRDS('./data/input/point/ghcn/ghcn_monthly_p.rds'))
 
 #---------------NA values monthly data---------------
 NA_val <- monthly[is.na(precip)]
@@ -73,7 +72,7 @@ daily_all <- daily[ ,sum(precip), by = list(id, year, season, station_country, s
 clean_daily <- daily_all[!month_to_del, on = .(id, year, season)]
 
 #---------adjust metadata--------------------
-meta_d <- load('../../data/input/point/ghcn_meta.rdata')
+meta_d <- load('./data/input/point/ghcn/ghcn_meta.rdata')
 metadata_d_precip <- as.data.table(metadata_d_precip)
 metadata_d_precip[, id := paste0('d', id)]
 metadata_m_precip <- as.data.table(metadata_m_precip)
@@ -81,11 +80,11 @@ metadata_m_precip[, id := paste0('m', id)]
 ghcn_meta_seas <- rbind(metadata_m_precip, metadata_d_precip)
 
 #---------assign points to grid --------------------
-grid_bounds <- readRDS('../../data/geodata/grid_cells.rds')
+grid_bounds <- readRDS('./data/geodata/grid_cells.rds')
 grid_bounds <- grid_bounds[1:5791, ]
 dt <- unique(grid_bounds[ghcn_meta_seas, .(id, cell_id), 
               on = .(lat_l <= lat, lat_u > lat,  
-                     long_l <= lon, long_u > lon)])
+                     lon_l <= lon, lon_u > lon)])
 ghcn_meta_seas <- ghcn_meta_seas[dt, on = 'id']
 ghcn_meta_seas <- ghcn_meta_seas[complete.cases(ghcn_meta_seas)]
 
@@ -112,5 +111,5 @@ ghcn_seasonal_p[, season := factor(season, levels =  c('wi', 'sp', 'su', 'au'))]
 ghcn_seasonal_p[, id := as.factor(id)]
 setorder(ghcn_seasonal_p, id, year, season)
 
-saveRDS(ghcn_seasonal_p, '../../data/input/point/ghcn_seas_p.rds')
-save(ghcn_meta_seas, file = '../../data/input/point/ghcn_meta_seas.rdata')
+saveRDS(ghcn_seasonal_p, './data/input/point/ghcn/ghcn_seas_p.rds')
+save(ghcn_meta_seas, file = './data/input/point/ghcn/ghcn_meta_seas.rdata')

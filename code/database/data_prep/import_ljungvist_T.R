@@ -1,5 +1,6 @@
 source('./code/main.R')
 library(rvest)
+library(leaflet)
 
 #----------download----------------------
 path <- 'https://www1.ncdc.noaa.gov/pub/data/paleo/reconstructions/hydroclimate/ljungqvist2016/temperature_proxies/'
@@ -45,8 +46,8 @@ dt <- unique(grid_bounds[melt_meta, .(id, cell_id),
 melt_meta_id <- melt_meta[dt, on = 'id']
 melt_meta_id <- melt_meta_id[complete.cases(melt_meta_id)]
 
-leaflet::leaflet() %>% leaflet::addTiles() %>%
-  leaflet::addMarkers(melt_meta$lon, melt_meta$lat,popup = melt_meta_id$name)
+leaflet() %>% addTiles() %>%
+  addMarkers(melt_meta_id$lon, melt_meta_id$lat, popup = melt_meta_id$name)
 
 #--------------------save--------------------------------
 melt_data[, value := as.numeric(as.character(value))]

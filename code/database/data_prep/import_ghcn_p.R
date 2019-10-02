@@ -1,11 +1,18 @@
-library(data.table)
+source('./code/main.R')
 library(leaflet)
 
+dir.create('./data/input/point/ghcn/')
+dir.create('./data/input/point/ghcn/raw')
+path_d <- './data/input/point/ghcn/raw/precip_d/'
+dir.create(path_d)
+path_m <- './data/input/point/ghcn/raw/precip_m/'
+dir.create(path_m)
+
 #-----------download daily files-----------------------
-list_files_d <-read.delim('../../code/database/data_prep/ghcn/precip_d_source_knmi.txt', header = F) #read txt file with url adress of every station data
+list_files_d <- read.delim('../../code/database/data_prep/ghcn/precip_d_source_knmi.txt', header = F) #read txt file with url adress of every station data
 file_name_d <- as.data.table(list_files_d$V1)
 file_name_d [, paste0('V1', 1:2) := tstrsplit(V1, 'data/')]
-path_d <- '../../data/input/point/raw/ghcn/precip_d/'
+
 file_url_d <- as.character(file_name_d$V1)
 
 for (i in 1:nrow(list_files_d)) {
@@ -17,7 +24,7 @@ for (i in 1:nrow(list_files_d)) {
 list_files_m <-read.delim('../../code/database/data_prep/ghcn/precip_m_source_knmi.txt', header = F) #read txt file with url adress of every station data
 file_name_m <- as.data.table(list_files_m$V1)
 file_name_m [, paste0('V1', 1:2) := tstrsplit(V1, 'data/')]
-path_m <- '../../data/input/point/raw/ghcn/precip_m/'
+
 file_url_m <- as.character(file_name_m$V1)
 
 for (i in 1:nrow(list_files_m)) {
@@ -26,7 +33,6 @@ for (i in 1:nrow(list_files_m)) {
 }
 
 #---------------create one file for daily logs ----------------
-
 list_names_d <- list.files(path = path_d, pattern = "*.dat", full.names = T)
 
 all_daily_precip <- data.table()
@@ -120,12 +126,12 @@ metadata_m_precip [cols.num] <- sapply(metadata_m_precip[cols.num], as.numeric)
 metadata_m_precip$station_country[metadata_m_precip$station_country == 'UNITED'] <- 'UK'
 
 #----------------save RDS-------------------------
-saveRDS(data.table(all_daily_precip), file = '../../data/input/point/ghcn_daily_p.rds')
-saveRDS(data.table(all_monthly_precip), file = '../../data/input/point/ghcn_monthly_p.rds')
-save(metadata_m_precip, metadata_d_precip, file = '../../data/input/point/ghcn_meta.rdata')
+saveRDS(data.table(all_daily_precip), file = './data/input/point/ghcn/ghcn_daily_p.rds')
+saveRDS(data.table(all_monthly_precip), file = './data/input/point/ghcn/ghcn_monthly_p.rds')
+save(metadata_m_precip, metadata_d_precip, file = './data/input/point/ghcn/ghcn_meta.rdata')
 
 #-------------check position of used station----------------
-load('../../data/input/point/ghcn_meta.rdata')
+load('./data/input/point/ghcn/ghcn_meta.rdata')
 
 # daily data
 leaflet() %>% addTiles() %>%
