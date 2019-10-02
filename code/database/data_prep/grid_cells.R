@@ -1,3 +1,5 @@
+source('./code/main.R')
+
 #-----Extract grid cells--------
 pauling <- readRDS('./data/input/gridded/pauling/pauling.rds')
 grid_cells <- unique(pauling[, .(cell_id, lat, lon)])

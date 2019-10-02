@@ -7,7 +7,7 @@ data_dir <- './data/input/point/pages2k/'
 dir.create(data_dir)
 data_name <- 'PAGES2k_v2.0.0.RData'
 load(paste0(data_dir, data_name))
-#The file should be uploaded in a public repository and downloaded here
+#The file should be uploaded in a public repository and downloaded here see issue #31
 
 raw_dataset <- D; rm(D); gc()
 data_size <- length(raw_dataset)

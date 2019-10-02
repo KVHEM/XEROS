@@ -1,7 +1,5 @@
 source('./code/main.R')
-
 library(ncdf4)
-library(RDS)
 
 #-----------read .nc file from working directory-------------
 

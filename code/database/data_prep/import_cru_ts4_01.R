@@ -1,6 +1,7 @@
+source('./code/main.R')
+
 library(ncdf4)
 library(raster)
-
 
 #-----------read .nc file from working directory to raster-------------
 ncpath <- './data/input/gridded/cru_ts4.01/'
