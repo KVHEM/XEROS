@@ -1,10 +1,13 @@
-library(data.table)
+source('./main.R')
+
 library(readtext)
-library(ggplot2)
 library(lubridate)
 library(magrittr)
 
-dload_path <- '../../data/input/gridded/luterbacher/raw/'
+data_dir <- '../data/input/gridded/luterbacher/'
+dir.create(data_dir)
+dload_path <- paste0(data_dir, 'raw/')
+dir.create(dload_path)
 
 #-----download--------
 sez <- c('au', 'sp', 'su', 'wi')  #seasons
@@ -32,8 +35,8 @@ luterbacher[, paste0('Var12', 1:2) := tstrsplit(Var12, '.t')]
 luterbacher[, Var12:=NULL]
 luterbacher[, Var122 := NULL]
 setnames(luterbacher, old = c("value", 'Var112', 'Var121', 'Var2'), new = c("temp", 'year', 'season', 'cell_id'))
-luterbacher[, lat := rep(seq(-24.75, 39.75, 0.5), each = num_of_files, 70)]  #latilude based on given order after melt
-luterbacher[, long := rep(seq(69.75, 35.25, -0.5), each = 130 * num_of_files)]  #longitude based on given order after melt
+luterbacher[, lon := rep(seq(-24.75, 39.75, 0.5), each = num_of_files, 70)]  #latilude based on given order after melt
+luterbacher[, lat := rep(seq(69.75, 35.25, -0.5), each = 130 * num_of_files)]  #longitude based on given order after melt
 luterbacher[luterbacher == -999.99] <- NA   # -999.99 to NA values
 luterbacher[, season := factor(season, levels =  c('wi', 'sp', 'su', 'au'))] 
 luterbacher[, temp_yr := mean(temp), .(year, cell_id)]
@@ -53,14 +56,14 @@ luterbacher[, day := NULL]
 head(luterbacher)
 
 #------save-----------
-saveRDS(luterbacher, "../../data/input/gridded/luterbacher/luterbacher.rds")
+fname <- paste0(data_dir, "luterbacher.rds")
+saveRDS(luterbacher, fname)
 
 #-----validate-----------
-luterbacher <- readRDS("../../data/input/gridded/luterbacher/luterbacher.rds")
-#luterbacher <- readRDS("../../Projects/2018XEROS/data/input/gridded/luterbacher/luterbacher.rds")
+luterbacher <- readRDS(fname)
 
 try <- luterbacher[year == 1802]
-ggplot(try, aes(x = long, y = lat , fill = temp)) +
+ggplot(try, aes(x = lon, y = lat , fill = temp)) +
   geom_tile() +
   scale_fill_gradient(low = "deepskyblue", high = 'dark red', na.value = "navyblue") + 
   facet_grid(season ~ year) +
