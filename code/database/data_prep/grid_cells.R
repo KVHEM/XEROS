@@ -1,11 +1,9 @@
-library(data.table)
-
 #-----Extract grid cells--------
-pauling <- readRDS('../../data/input/gridded/pauling/pauling.rds')
-grid_cells <- unique(pauling[, .(cell_id, lat, long)])
+pauling <- readRDS('./data/input/gridded/pauling/pauling.rds')
+grid_cells <- unique(pauling[, .(cell_id, lat, lon)])
 grid_bounds <- grid_cells[, .(cell_id, 
                    lat_u = lat + 0.25, lat_l = lat - 0.25,
-                   long_u = long + 0.25, long_l = long - 0.25)]
+                   lon_u = lon + 0.25, lon_l = lon - 0.25)]
 
-saveRDS(grid_bounds, file = '../../data/geodata/grid_cells.rds')
+saveRDS(grid_bounds, file = './data/geodata/grid_cells.rds')
 

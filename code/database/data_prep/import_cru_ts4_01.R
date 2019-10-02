@@ -1,18 +1,23 @@
 library(ncdf4)
 library(raster)
-library(data.table)
-library(ggplot2)
+
 
 #-----------read .nc file from working directory to raster-------------
-ncpath <- '../../data/input/gridded/cru_ts4.01/'
+ncpath <- './data/input/gridded/cru_ts4.01/'
+dir.create(ncpath)
+
+#loads data already transformed in netcdf format in Hanel et al. 2018 
+#So it should be downloaded here; see issue #32
+
+
 ncname_1 <- 'cru_pet_mon'
-ncfname_1 <- paste(ncpath, ncname_1, '.nc', sep='')
+ncfname_1 <- paste0(ncpath, ncname_1, '.nc')
 raster_pet <- stack(ncfname_1)
 ncname_2 <- 'cru_pre_mon'
-ncfname_2 <- paste(ncpath, ncname_2, '.nc', sep='')
+ncfname_2 <- paste0(ncpath, ncname_2, '.nc')
 raster_pre<- stack(ncfname_2)
 ncname_3 <- 'cru_tavg_mon'
-ncfname_3 <- paste(ncpath, ncname_3, '.nc', sep='')
+ncfname_3 <- paste0(ncpath, ncname_3, '.nc')
 raster_tavg <- stack(ncfname_3)
 
 #---------prepare data-----------------
@@ -43,7 +48,7 @@ for (i in 1:length(year)) {
   pet_slice <- pet_array[, ,i]   # creating array with one year and one season values
   pet_vec <- as.vector(pet_slice)
   dt <- as.data.table(cbind(pet_vec, lonlat))
-  setnames(dt, old = c('pet_vec', 'Var1', 'Var2'), new = c('value', 'long', 'lat'))
+  setnames(dt, old = c('pet_vec', 'Var1', 'Var2'), new = c('value', 'lat', 'lon'))
   dt[, year := year [, i]]
   dt[, season := season [, i]]
   dt[, cell_id := cell_id]
@@ -59,7 +64,7 @@ for (i in 1:length(year)) {
   pre_slice <- pre_array[, ,i]   
   pre_vec <- as.vector(pre_slice)
   dt <- as.data.table(cbind(pre_vec, lonlat))
-  setnames(dt, old = c('pre_vec', 'Var1', 'Var2'), new = c('value', 'lat', 'long'))
+  setnames(dt, old = c('pre_vec', 'Var1', 'Var2'), new = c('value', 'lat', 'lon'))
   dt[, year := year [, i]]
   dt[, season := season [, i]]
   dt[, cell_id := cell_id]
@@ -75,7 +80,7 @@ for (i in 1:length(year)) {
   tavg_slice <- tavg_array[, ,i]   
   tavg_vec <- as.vector(tavg_slice)
   dt <- as.data.table(cbind(tavg_vec, lonlat))
-  setnames(dt, old = c('tavg_vec', 'Var1', 'Var2'), new = c('value', 'lat', 'long'))
+  setnames(dt, old = c('tavg_vec', 'Var1', 'Var2'), new = c('value', 'lat', 'lon'))
   dt[, year := year [, i]]
   dt[, season := season [, i]]
   dt[, cell_id := cell_id]
@@ -86,30 +91,32 @@ for (i in 1:length(year)) {
 
 #------------melting and save to RDS-------------
 cru_ts4.01 <-  unique(rbind(prep_pet, prep_pre, prep_tavg))
+cru_ts4.01 <-  cru_ts4.01[complete.cases(cru_ts4.01)]
 
 cru_ts4.01[, season := factor(season, levels =  c('wi', 'sp', 'su', 'au'))] 
 setorder(cru_ts4.01, "cell_id", "year", "season")
 
-saveRDS(cru_ts4.01, '../../Projects/2018XEROS/data/gridded/cru_ts4.01/cru_ts4.01.rds')
+fname <- paste0(ncpath, 'cru_ts4.01.rds')
+saveRDS(cru_ts4.01, fname)
 
 #------------validate---------------------------
-prep_pre <- readRDS('../../data/input/gridded/cru_ts4.01/cru_ts4.01.rds')
+prep_pre <- readRDS(fname)
 try <- cru_ts4.01[year == 1968 & var == 'precip'] #change
-ggplot(try, aes(x = long, y = lat, fill = value)) +
+ggplot(try, aes(x = lon, y = lat, fill = value)) +
   geom_tile() +
   scale_fill_gradient(low = "deepskyblue", high = 'dark red', na.value = "navyblue") + 
   facet_grid(season ~ year) +
   theme_minimal()
 
 try <- cru_ts4.01[year == 1968 & var == 'tavg'] #change
-ggplot(try, aes(x = long, y = lat, fill = value)) +
+ggplot(try, aes(x = lon, y = lat, fill = value)) +
   geom_tile() +
   scale_fill_gradient(low = "deepskyblue", high = 'dark red', na.value = "navyblue") + 
   facet_grid(season ~ year) +
   theme_minimal()
 
 try <- cru_ts4.01[year == 1968 & var == 'pet'] #change
-ggplot(try, aes(x = long, y = lat, fill = value)) +
+ggplot(try, aes(x = lon, y = lat, fill = value)) +
   geom_tile() +
   scale_fill_gradient(low = "deepskyblue", high = 'dark red', na.value = "navyblue") + 
   facet_grid(season ~ year) +
