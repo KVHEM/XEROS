@@ -1,18 +1,22 @@
-install.packages("icesTAF")
-install.packages("foreach")
 library(icesTAF)
+library(foreach)
 library(data.table)
+library(doParallel)
+
 #-------------creates metadata file----------------------------
 GRDB <- read.csv('../../data/other/rivers/raw/GRDB_long.csv')
+GRDB <- read.csv('../../Projects/2018XEROS/data/other/rivers/raw/GRDB_long.csv')
 stream_meta <- GRDB[,-c(1,12,13,14,15)]
 stream_meta <- as.data.table(unique(stream_meta))
 saveRDS(stream_meta, file = '../../data/other/rivers/stream_meta.rds')
+saveRDS(stream_meta, file = '../../Projects/2018XEROS/data/other/rivers/stream_meta.rds')
 
 
 #---------daily data-----------------
 
 # choosing only data that is in grdc_dat file to run foreach without warnings
 all_day_files <- as.data.table(list.files(path = '../../data/other/rivers/raw/grdcdat_day/', pattern = '.day'))
+all_day_files <- as.data.table(list.files(path = '../../Projects/2018XEROS/data/other/rivers/raw/grdcdat_day/', pattern = '.day'))
 all_day_files <- tstrsplit(all_day_files$V1, '.d')
 all_day_files <- as.data.table(all_day_files[1])
 all_day_files <- as.numeric(all_day_files$V1)
@@ -23,9 +27,13 @@ id_day <- merge(id_day, all_day_files, by = 'V1')
 
 # string of paths and filenames to create id column with filename to every element of list
 path_day <- paste0('../../data/other/rivers/raw/grdcdat_day/', id_day$V1, '.day')
+path_day <- paste0('../../Projects/2018XEROS/data/other/rivers/raw/grdcdat_day/', id_day$V1, '.day')
 string_id_day <- id_day$V1
 
-stream_80y_global_day <- foreach(i = path_day, j = string_id_day) %do% as.data.table(read.table(i, header = T, sep = ';'))[, id:=j]
+cl <- makeCluster(detectCores() - 1)
+stream_80y_global_day <- foreach(i = path_day, j = string_id_day, .combine = rbind) %dopar%
+  as.data.table(read.table(i, header = TRUE, sep = ';'))[, id := j]
+stopCluster(cl)
 
 #-----------same for monthly data----------------------------
 all_mon_files <- as.data.table(list.files(path = '../../data/other/rivers/raw/grdcdat_mon/', pattern = '.mon'))
@@ -38,9 +46,11 @@ id_mon <- as.data.table(stream_meta$ID)
 id_mon <- merge(id_mon, all_mon_files, by = 'V1')
 
 path_mon <- paste0('../../data/other/rivers/raw/grdcdat_mon/', id_mon$V1, '.mon')
+path_mon <- paste0('../../data/other/rivers/raw/grdcdat_mon/', id_mon$V1, '.mon')
 string_id_mon <- id_mon$V1
 
-stream_80y_global_month <- foreach(i = path_mon, j = string_id_mon) %do% as.data.table(read.table(i, header = T, sep = ';'))[, id:=j]
+stream_80y_global_month <- foreach(i = path_mon, j = string_id_mon) %do% 
+  as.data.table(read.table(i, header = T, sep = ';'))[, id:=j]
 #---------------unlist-------------
 stream_80y_global_day <- rbindlist(stream_80y_global_day)
 stream_80y_global_month <- rbindlist(stream_80y_global_month)
