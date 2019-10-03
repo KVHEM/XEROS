@@ -48,6 +48,22 @@ string_id_mon <- id_mon$V1
 stream_80y_global_month <- foreach(i = path_mon, j = string_id_mon, .combine = rbind) %do% 
   as.data.table(read.table(i, header = T, sep = ';'))[, id:=j]
 
+stream_80y_global_day[, hh.mm := NULL]
+stream_80y_global_day[, Flag := NULL]
+stream_80y_global_day[, date := as.Date(YYYY.MM.DD)]
+stream_80y_global_day[, YYYY.MM.DD := NULL]
+colnames(stream_80y_global_day)[1:2] <- c('runoff_orig', 'runoff_calc')
+setorder(stream_80y_global_day, id, date, Original, Calculated)
+stream_80y_global_day <- stream_80y_global_day[, c(3, 4, 1, 2)]
+
+
+stream_80y_global_month[, hh.mm := NULL]
+stream_80y_global_month[, Flag := NULL]
+stream_80y_global_month[, date := as.Date(gsub('-00', '-01', YYYY.MM.DD))]
+stream_80y_global_month[, YYYY.MM.DD := NULL]
+colnames(stream_80y_global_month)[1:2] <- c('runoff_orig', 'runoff_calc')
+stream_80y_global_month <- stream_80y_global_month[, c(3, 4, 1, 2)]                   
+
 #-----------------save RDS file------------------------------
 saveRDS(stream_80y_global_day, file = './data/other/grdb/stream_80y_global_day.rds')
 saveRDS(stream_80y_global_month, file = './data/other/grdb/stream_80y_global_month.rds')
