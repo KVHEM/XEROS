@@ -1,6 +1,5 @@
-library(data.table)
-library(dplyr)
-library(ggplot2)
+source('./code/main.R')
+source('./code/graphics.R')
 library(sf)
 library(rnaturalearth)
 library(rnaturalearthdata)
@@ -10,8 +9,8 @@ library(gridExtra)
 
 #----------load pauling data--------
 
-pauling <- as.data.table(readRDS('../../data/input/gridded/pauling/pauling.rds'))
-pauling2 <- as.data.table(readRDS('../../data/input/gridded/pauling/pauling.rds'))
+pauling <- as.data.table(readRDS('./data/input/gridded/pauling/pauling.rds'))
+pauling2 <- as.data.table(readRDS('./data/input/gridded/pauling/pauling.rds'))
 
 #----computation of variation for every season and  two time periods: old(1500-1600) and new (1900-2000)
 #----and ratio between these variation in every point---------
@@ -62,7 +61,6 @@ var_au[, ratio := var_au$au_old / var_au$au_new]
 
 #--------map output---------------------------------------
 world <- ne_countries(scale = "medium", returnclass = "sf")
-palette_RdBu = colorRampPalette(rev(c('#d73027','#f46d43','#fdae61','#fee090','#fef0d9','#e0f3f8','#abd9e9','#74add1','#4575b4')), space = "rgb")
 
 p1 <- ggplot(data = world) +
   scale_fill_gradientn(colours = palette_RdBu(100),
@@ -72,7 +70,7 @@ p1 <- ggplot(data = world) +
                                               title.position = "bottom",
                                               title.hjust = 0.5, 
                                               raster = TRUE)) + 
-  stat_summary_2d(data = var_wi, aes(x = long, y = lat, z = var_wi$ratio), bins = 80)  + 
+  stat_summary_2d(data = var_wi, aes(x = lon, y = lat, z = var_wi$ratio), bins = 80)  + 
   geom_sf(color = "white", fill = NA) +
   coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
   labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Winter')+
@@ -87,7 +85,7 @@ p2 <- ggplot(data = world) +
                                               title.position = "bottom",
                                               title.hjust = 0.5, 
                                               raster = TRUE)) + 
-  stat_summary_2d(data = var_sp, aes(x = long, y = lat, z = var_sp$ratio), bins = 80)  + 
+  stat_summary_2d(data = var_sp, aes(x = lon, y = lat, z = var_sp$ratio), bins = 80)  + 
   geom_sf(color = "white", fill = NA) +
   coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
   labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Spring')+
@@ -102,7 +100,7 @@ p3 <- ggplot(data = world) +
                                               title.position = "bottom",
                                               title.hjust = 0.5, 
                                               raster = TRUE)) + 
-  stat_summary_2d(data = var_su, aes(x = long, y = lat, z = var_su$ratio), bins = 80)  + 
+  stat_summary_2d(data = var_su, aes(x = lon, y = lat, z = var_su$ratio), bins = 80)  + 
   geom_sf(color = "white", fill = NA) +
   coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
   labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Summer')+
@@ -117,7 +115,7 @@ p4 <- ggplot(data = world) +
                                               title.position = "bottom",
                                               title.hjust = 0.5, 
                                               raster = TRUE)) + 
-  stat_summary_2d(data = var_au, aes(x = long, y = lat, z = var_au$ratio), bins = 80)  + 
+  stat_summary_2d(data = var_au, aes(x = lon, y = lat, z = var_au$ratio), bins = 80)  + 
   geom_sf(color = "white", fill = NA) +
   coord_sf(xlim = c(-25, 40), ylim = c(33, 71), expand = FALSE)+
   labs(x = 'Latitude', y = 'Longitude', fill = 'Ratio', title = 'Autumn')+
@@ -125,5 +123,5 @@ p4 <- ggplot(data = world) +
   theme_bw()
 
 gg <- grid.arrange(p1, p2, p3, p4, nrow = 2, top = 'Variance ratio between 1500-1600 & 1900-2000')
-ggsave("../../results/bias/var_1500_1600.pdf", gg)
+ggsave("./results/database/var_ratio_16_vs_20_century.pdf", gg, height = 24, width = 24, units = "cm")
 

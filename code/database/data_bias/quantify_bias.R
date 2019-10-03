@@ -1,18 +1,12 @@
-library(data.table)
-library(ggplot2)
-library(plyr)
+source('./code/main.R')
 
 acf.1 = function(x, ...) {
   tryCatch(acf(x[!is.na(x)], plot = F, ...)$acf[2], error = function(e) NA)
 }
 
-ghcn <- readRDS('../../data/input/point/ghcn_seas_p.rds')
-load(file = '../../data/input/point/ghcn_meta_seas.rdata')
-pauling <- data.table(readRDS('../../data/input/gridded/pauling/pauling.rds'))
-
-#ghcn <- readRDS('../../Projects/2018XEROS/data/input/point/ghcn_seas_p.rds') #alternative path
-#load(file = '../../Projects/2018XEROS/data/input/point/ghcn_meta_seas.rdata') #alternative path
-#pauling <- data.table(readRDS('../../Projects/2018XEROS/data/input/gridded/pauling/pauling.rds')) #alternative path
+ghcn <- readRDS('./data/input/point/ghcn/ghcn_seas_p.rds')
+load(file = './data/input/point/ghcn/ghcn_meta_seas.rdata')
+pauling <- data.table(readRDS('./data/input/gridded/pauling/pauling.rds'))
 
 #----------Merge Datasets------------------------------
 
@@ -37,7 +31,7 @@ setnames(dtcb, "p_obs", "precip")
 dtca$dataset <- factor("Pauling")
 dtcb$dataset <- factor("GHCN")
 dtd <- rbind(dtca, dtcb)
-saveRDS(dtd, file = "../../data/input/ghcn_pauling.rds")
+saveRDS(dtd, file = "./data/output/database/ghcn_pauling.rds")
 
 #----------Stats---------------------------------------
 ghcn_stat <- dtd[, 
@@ -73,17 +67,6 @@ ggplot(to_plot[period == "pre_1900"], aes(x = precip, fill = dataset)) +
   geom_density(alpha = 0.5) +
   facet_wrap(~season) +
   theme_bw()
-
-to_plot <- ddply(to_plot, .(cell_id, season, period, dataset), summarize,
-                      precip = unique(precip),
-                      ecdf = ecdf(precip)(unique(precip)))
-ggplot(to_plot,
-       aes(x = precip, y = ecdf, color = dataset)) + 
-  geom_line(aes(x=precip, color = dataset, linetype = period), lwd = 1) +
-  scale_colour_manual(values = c("blue","red")) +
-  facet_wrap(~season) +
-  theme_bw()
-
 
 
 

@@ -15,4 +15,5 @@ dir.create('./data/input/point')
 dir.create('./data/input/used_in_models')
 dir.create('./data/input/used_in_models/mhm')
 dir.create('./data/output/')
-
+dir.create('./data/output/database')
+dir.create('./data/other/')

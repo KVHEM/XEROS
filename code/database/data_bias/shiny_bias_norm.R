@@ -1,15 +1,13 @@
-library(data.table)
-library(plyr)
-library(ggplot2)
+source('./code/main.R')
+source('./code/graphics.R')
 library(shiny) 
 library(plotrix)
 library(leaflet)
 
-dta <- readRDS('../../data/other/norm_ghcn_paul_owda.rds')
-dta <- readRDS('../../Projects/2018XEROS/data/other/norm_ghcn_paul_owda.rds') #alternative path
+dta <- readRDS('./data/output/database/norm_ghcn_paul_owda.rds')
 
-meta_print <- unique(dta[, c('cell_id', 'long', 'lat', 'period', 'season', 'n_val')])
-colnames(meta_print) <- c('id', 'Long', 'Lat', 'Period', 'Season', 'N')
+meta_print <- unique(dta[, c('cell_id', 'lon', 'lat', 'period', 'season', 'n_val')])
+colnames(meta_print) <- c('id', 'Lon', 'Lat', 'Period', 'Season', 'N')
 
 # computing ecdf for both dta and owda
 ecdf_plot <- ddply(dta, .(cell_id, season, period, dataset), summarize,
@@ -17,11 +15,11 @@ ecdf_plot <- ddply(dta, .(cell_id, season, period, dataset), summarize,
                    ecdf = ecdf(precip_scale)(unique(precip_scale)))
 
 # adding station name to metadata
-load("../../data/input/point/ghcn_meta_seas.rdata")
+load("./data/input/point/ghcn/ghcn_meta_seas.rdata")
 ghcn_meta_seas[, id := NULL]
 setnames(ghcn_meta_seas, old = 'cell_id', new = 'id')
-meta_print <- unique(dta[, c('cell_id', 'long', 'lat', 'period', 'season', 'n_val')])
-colnames(meta_print) <- c('id', 'Long', 'Lat', 'Period', 'Season', 'N')
+meta_print <- unique(dta[, c('cell_id', 'lon', 'lat', 'period', 'season', 'n_val')])
+colnames(meta_print) <- c('id', 'Lon', 'Lat', 'Period', 'Season', 'N')
 
 meta_print <- merge(meta_print, ghcn_meta_seas, by='id')
 
@@ -46,7 +44,7 @@ server <- shinyServer(function(input, output) {
   store_react <- reactiveValues(clickedMarker = NULL) # reactive values
   output$map <- renderLeaflet({
     leaflet() %>% addTiles() %>%
-      addCircleMarkers(lng = meta_print$Long, 
+      addCircleMarkers(lng = meta_print$Lon, 
                        lat = meta_print$Lat, 
                        layerId = meta_print$id, 
                        color = 'lightslategrey' 

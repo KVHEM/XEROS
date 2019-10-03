@@ -1,18 +1,15 @@
+source('./code/main.R')
 library(leaflet)
 library(shiny) 
-library(ggplot2)
 library(plyr)
-library(data.table)
-#---------------load and prepare data---------------------
-dta <- readRDS(file = "../../data/input/ghcn_pauling.rds")
-pauling <- data.table(readRDS('../../data/input/gridded/pauling/pauling.rds')) 
 
-dta <- readRDS(file = "../../Projects/2018XEROS/data/input/ghcn_pauling.rds") #alternative path
-pauling <- data.table(readRDS('../../Projects/2018XEROS/data/input/gridded/pauling/pauling.rds')) #alternative path
+#---------------load and prepare data---------------------
+dta <- readRDS(file = "./data/output/database/ghcn_pauling.rds")
+pauling <- data.table(readRDS('./data/input/gridded/pauling/pauling.rds')) 
 
 dtb <- pauling[cell_id %in% unique(dta$cell_id)]
-meta_print <- unique(dta[, c('cell_id', 'long', 'lat', 'period', 'season', 'n_val')] )
-colnames(meta_print) <- c('id', 'Long', 'Lat', 'Period', 'Season', 'N')
+meta_print <- unique(dta[, c('cell_id', 'lon', 'lat', 'period', 'season', 'n_val')] )
+colnames(meta_print) <- c('id', 'Lon', 'Lat', 'Period', 'Season', 'N')
 dtb[, mov_var := zoo::rollapplyr(precip, 1:.N, mean), by = .(cell_id, season)]
 
 ecdf_plot <- ddply(dta, .(cell_id, season, period, dataset), summarize,
@@ -33,7 +30,7 @@ server <- shinyServer(function(input, output) {
   store_react <- reactiveValues(clickedMarker = NULL) # reactive values
   output$map <- renderLeaflet({
     leaflet() %>% addTiles() %>%
-      addCircleMarkers(lng = meta_print$Long, 
+      addCircleMarkers(lng = meta_print$Lon, 
                        lat = meta_print$Lat, 
                        layerId = meta_print$id, 
                        color = 'lightslategrey' 
