@@ -16,7 +16,7 @@ will allow to project future hydroclimatic conditions across Europe more reliabl
 ## Members
 
 #### CULS Prague
-Martin Hanel, Yannis Markonis, Petr Maca, Jan Kysely, Filip Strnad (PhD student), Vojtech Moravec (PhD student), Veronica Cejkova (Msc student)
+Martin Hanel, Yannis Markonis, Petr Maca, Jan Kysely, Filip Strnad (PhD student), Vojtech Moravec (PhD student), Veronika Cejkova (Msc student)
 
 #### UFZ
 Oldrich Rakovec, Rohini Kumar, Stephan Thober, Luis Samaniego
