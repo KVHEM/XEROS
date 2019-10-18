@@ -9,20 +9,20 @@ pauling <- as.data.table(readRDS('./data/input/gridded/pauling/pauling.rds'))
 pauling[, precip_z := scale(precip), .(season, lat, lon)]
 
 #-------------time series markers grid--------------
-one_layer <- pauling[year == 1500 & season =='wi']
-grid_id <- one_layer [,c('lon', 'lat', 'cell_id')]
+one_layer <- pauling[year == 1500 & season == 'wi']
+grid_id <- one_layer [, c('lon', 'lat', 'cell_id')]
 
 #--------------user interface------------------
 ui<- fluidPage(titlePanel('Seasonal precipitation data - Pauling'),
  fluidRow( column(width = 5, offset = 0.5,
    numericInput('chosen_year', 'Enter year (valid input: 1500 - 2000):',
                  value = 1500,  min = 1500, max = 2000, step = 1),
-   radioButtons('seas', 'Season', c('winter'='wi', 'spring'='sp', 'summer'='su', 'autumn'='au'), inline = T), 
+   radioButtons('seas', 'Season', c('winter' = 'wi', 'spring' = 'sp', 'summer' = 'su', 'autumn' = 'au'), inline = TRUE), 
    actionButton('btn', 'Select')
     
   )),
   splitLayout(
-    leafletOutput('map1', width = '100%',height="550px"),
+    leafletOutput('map1', width = '100%', height = "550px"),
     plotOutput('plot')
   ))
 
@@ -59,7 +59,7 @@ server <- shinyServer(function(input, output) {
         geom_vline(xintercept = unique(pauling[year == input$chosen_year]$year), col = 'red') +
         facet_wrap(~season) +
         theme_bw() + 
-        ggtitle(paste('Seasonal precipitation in long:',store_react$clickedMarker$lng,
+        ggtitle(paste('Seasonal precipitation in lon:',store_react$clickedMarker$lon,
                                         ' lat:',store_react$clickedMarker$lat ))+ # print clicked tile as header
         ylab('Precip. (mm/season)') + 
         xlab('Year')
