@@ -21,7 +21,7 @@ for (i in 1500:1900) {            #time period you want to download (years)
 }
 
 #-----read-----------
-list_files <- list.files(path = dload_path, pattern = "*.txt", full.names = T) #list of all downloaded files
+list_files <- list.files(path = dload_path, pattern = "*.txt", full.names = TRUE) #list of all downloaded files
 luterbacher <- as.data.table(melt(t(sapply(list_files, FUN = scan))))  #reading of files, transpose, melting and save as one data table
 
 #-------tidy----------
@@ -48,9 +48,9 @@ luterbacher[ season == 'wi', mo:=1]
 luterbacher[ season == 'au', mo:=10]
 luterbacher[ season == 'sp', mo:=4]
 luterbacher[ season == 'su', mo:=7]
-luterbacher[, day:= factor(15)]
+luterbacher[, day := factor(15)]
 luterbacher[, time := NA]
-luterbacher$time <- as.Date(with(luterbacher, paste(year, mo, day,sep="-")), "%Y-%m-%d")
+luterbacher$time <- as.Date(with(luterbacher, paste(year, mo, day, sep = "-")), "%Y-%m-%d")
 luterbacher[, mo := NULL]
 luterbacher[, day := NULL]
 head(luterbacher)
