@@ -21,7 +21,7 @@ setnames(ghcn_meta_seas, old = 'cell_id', new = 'id')
 meta_print <- unique(dta[, c('cell_id', 'lon', 'lat', 'period', 'season', 'n_val')])
 colnames(meta_print) <- c('id', 'Lon', 'Lat', 'Period', 'Season', 'N')
 
-meta_print <- merge(meta_print, ghcn_meta_seas, by='id')
+meta_print <- merge(meta_print, ghcn_meta_seas, by = 'id')
 
 to_plot_td <- dta[season == 'su']
 
@@ -74,7 +74,7 @@ server <- shinyServer(function(input, output) {
                              to_plot_td[to_plot_td$cell_id %in% store_react$clickedMarker$id & 
                                           dataset == 'GHCN'], by = 'year')
       
-      taylor.diagram(same_length_1$precip_scale.x, same_length_1$precip_scale.y, sd.arcs = T, ref.sd = T)
+      taylor.diagram(same_length_1$precip_scale.x, same_length_1$precip_scale.y, sd.arcs = TRUE, ref.sd = TRUE)
       
       taylor.diagram(same_length_2$precip_scale.x, same_length_2$precip_scale.y, add = TRUE, col = "blue")
     })
@@ -108,11 +108,9 @@ precip[, precip := sum(precip), .(cell_id, dataset, year)]
 precip <- unique(precip)
 precip[, precip := scale(precip), .(dataset, cell_id)]
 precip_taylor <- dcast(precip, ... ~ dataset, value.var = "precip")
-taylor.diagram(precip_taylor$GHCN, precip_taylor$Pauling, sd.arcs=T, ref.sd=T)
-taylor.diagram(precip_taylor[year < 1900, GHCN], precip_taylor[year < 1900, Pauling], add = T, col = 'dark red')
-taylor.diagram(precip_taylor[year > 1900, GHCN], precip_taylor[year > 1900, Pauling], add = T, col = 'tomato3')
-taylor.diagram(precip_taylor$GHCN, precip_taylor$OWDA, add = T, col = 'blue')
-taylor.diagram(precip_taylor[year < 1900, GHCN], precip_taylor[year < 1900, OWDA], add = T, col = 'dark blue')
-taylor.diagram(precip_taylor[year > 1900, GHCN], precip_taylor[year > 1900, OWDA], add = T, col = 'steelblue')
-
-
+taylor.diagram(precip_taylor$GHCN, precip_taylor$Pauling, sd.arcs = TRUE, ref.sd = TRUE)
+taylor.diagram(precip_taylor[year < 1900, GHCN], precip_taylor[year < 1900, Pauling], add = TRUE, col = 'dark red')
+taylor.diagram(precip_taylor[year > 1900, GHCN], precip_taylor[year > 1900, Pauling], add = TRUE, col = 'tomato3')
+taylor.diagram(precip_taylor$GHCN, precip_taylor$OWDA, add = TRUE, col = 'blue')
+taylor.diagram(precip_taylor[year < 1900, GHCN], precip_taylor[year < 1900, OWDA], add = TRUE, col = 'dark blue')
+taylor.diagram(precip_taylor[year > 1900, GHCN], precip_taylor[year > 1900, OWDA], add = TRUE, col = 'steelblue')
