@@ -16,7 +16,7 @@ ljungvist_meta <- ljungvist_meta[id %in% ids_eu]
 meta_print <- ljungvist_meta[,c('name', 'id', 'lon', 'lat', 'proxy')] 
 colnames(meta_print) <- c('Name', 'id', 'Lon', 'Lat', 'Proxy')
 #colour palette for legend and markers
-pal <- colorFactor(palette = c('red', 'blue', 'orange','green'), domain = meta_print$Proxy) 
+pal <- colorFactor(palette = c('red', 'blue', 'orange', 'green'), domain = meta_print$Proxy) 
 
 # --------------user interface-------------
 ui <- fluidPage(fluidRow(
@@ -30,7 +30,7 @@ server <- shinyServer(function(input, output) {
   store_react <- reactiveValues(clickedMarker = NULL) # reactive values
   output$map <- renderLeaflet({
     leaflet() %>% addTiles() %>%
-    addCircleMarkers(lng =meta_print$Lon, lat = meta_print$Lat, 
+    addCircleMarkers(lon = meta_print$Lon, lat = meta_print$Lat, 
                    layerId = meta_print$id, color = pal(meta_print$Proxy)) %>%
     addLegend('topleft', pal = pal, values = meta_print$Proxy)
   })
