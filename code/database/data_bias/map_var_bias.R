@@ -22,8 +22,8 @@ raster_template <- raster_template %>% distinct(cell_id, .keep_all = TRUE) #only
 pau_wi_old <- pauling2[season %in% 'wi' & year >= 1500 & year <= 1600]
 pau_wi_new <- pauling2[season %in% 'wi' & year >= 1900 & year <= 2000]
 
-var_wi <- pau_wi_old[,list(wi_old = var(precip)),'cell_id']
-wi_new <- pau_wi_new[,list(wi_new = var(precip)),'cell_id']
+var_wi <- pau_wi_old[, list(wi_old = var(precip)), 'cell_id']
+wi_new <- pau_wi_new[, list(wi_new = var(precip)), 'cell_id']
 var_wi <- merge(var_wi, wi_new, by = 'cell_id')
 var_wi <- merge(var_wi, raster_template, by = 'cell_id')
 var_wi[, ratio := var_wi$wi_old / var_wi$wi_new]
@@ -32,8 +32,8 @@ var_wi[, ratio := var_wi$wi_old / var_wi$wi_new]
 pau_sp_old <- pauling2[season %in% 'sp' & year >= 1500 & year <= 1600]
 pau_sp_new <- pauling2[season %in% 'sp' & year >= 1900 & year <= 2000]
 
-var_sp <- pau_sp_old[,list(sp_old = var(precip)),'cell_id']
-sp_new <- pau_sp_new[,list(sp_new = var(precip)),'cell_id']
+var_sp <- pau_sp_old[, list(sp_old = var(precip)), 'cell_id']
+sp_new <- pau_sp_new[, list(sp_new = var(precip)), 'cell_id']
 var_sp <- merge(var_sp, sp_new, by = 'cell_id')
 var_sp <- merge(var_sp, raster_template, by = 'cell_id')
 var_sp[, ratio := var_sp$sp_old / var_sp$sp_new]
@@ -42,8 +42,8 @@ var_sp[, ratio := var_sp$sp_old / var_sp$sp_new]
 pau_su_old <- pauling2[season %in% 'su' & year >= 1500 & year <= 1600]
 pau_su_new <- pauling2[season %in% 'su' & year >= 1900 & year <= 2000]
 
-var_su <- pau_su_old[,list(su_old = var(precip)),'cell_id']
-su_new <- pau_su_new[,list(su_new = var(precip)),'cell_id']
+var_su <- pau_su_old[, list(su_old = var(precip)), 'cell_id']
+su_new <- pau_su_new[, list(su_new = var(precip)), 'cell_id']
 var_su <- merge(var_su, su_new, by = 'cell_id')
 var_su <- merge(var_su, raster_template, by = 'cell_id')
 var_su[, ratio := var_su$su_old / var_su$su_new]
@@ -52,8 +52,8 @@ var_su[, ratio := var_su$su_old / var_su$su_new]
 pau_au_old <- pauling2[season %in% 'au' & year >= 1500 & year <= 1600]
 pau_au_new <- pauling2[season %in% 'au' & year >= 1900 & year <= 2000]
 
-var_au <- pau_au_old[,list(au_old = var(precip)),'cell_id']
-au_new <- pau_au_new[,list(au_new = var(precip)),'cell_id']
+var_au <- pau_au_old[, list(au_old = var(precip)), 'cell_id']
+au_new <- pau_au_new[, list(au_new = var(precip)), 'cell_id']
 var_au <- merge(var_au, au_new, by = 'cell_id')
 var_au <- merge(var_au, raster_template, by = 'cell_id')
 var_au[, ratio := var_au$au_old / var_au$au_new]
