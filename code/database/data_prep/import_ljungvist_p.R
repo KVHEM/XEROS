@@ -27,14 +27,14 @@ melt_data <- data.table() # blank dta table
 melt_meta <- data.table()
 
 for (i in 1: nrow(all_files)) {
-  one_file <- as.data.table(read.delim(paste0(path, all_files[i]), skip = 2, header = F, 
-                                       sep = '',col.names = c('time', 'value')))
-  one_file[,id:= paste0('ljun_', formatC(i, width = 3, flag = '0'))] # using 3 digits number id
+  one_file <- as.data.table(read.delim(paste0(path, all_files[i]), skip = 2, header = FALSE, 
+                                       sep = '', col.names = c('time', 'value')))
+  one_file[, id := paste0('ljun_', formatC(i, width = 3, flag = '0'))] # using 3 digits number id
   melt_data <- rbind(melt_data, one_file)
   
-  one_meta <- as.data.table(read.delim(paste0(path, all_files[i]), nrows = 1, header = F, sep = '\t', 
+  one_meta <- as.data.table(read.delim(paste0(path, all_files[i]), nrows = 1, header = FALSE, sep = '\t', 
                             col.names = c('lon', 'lat', 'proxy', 'season', 'ref', 'name')))
-  one_meta[,id:= paste0('ljun_', formatC(i, width = 3, flag = '0'))]
+  one_meta[, id := paste0('ljun_', formatC(i, width = 3, flag = '0'))]
   melt_meta <- rbind(melt_meta, one_meta)
 }
 
