@@ -1,7 +1,7 @@
 source('./code/main.R')
 
 acf.1 = function(x, ...) {
-  tryCatch(acf(x[!is.na(x)], plot = F, ...)$acf[2], error = function(e) NA)
+  tryCatch(acf(x[!is.na(x)], plot = FALSE, ...)$acf[2], error = function(e) NA)
 }
 
 ghcn <- readRDS('./data/input/point/ghcn/ghcn_seas_p.rds')
