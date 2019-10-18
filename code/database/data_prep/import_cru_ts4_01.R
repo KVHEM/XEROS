@@ -25,7 +25,7 @@ raster_tavg <- stack(ncfname_3)
 seas_month <- rep(seq(1:460), each = 3) # vector of indeces for new layers
 seas_mean_pet <- stackApply(raster_pet, indices = seas_month, fun = mean) # means of variables for seasonal pet
 pet_array <- as.array(seas_mean_pet)
-seas_sum_pre <- stackApply(raster_pre, indices = seas_month, fun = 'sum', na.rm = F) # sum of varibles for seasonal pre
+seas_sum_pre <- stackApply(raster_pre, indices = seas_month, fun = 'sum', na.rm = FALSE) # sum of varibles for seasonal pre
 pre_array <- as.array(seas_sum_pre)
 seas_mean_tavg <- stackApply(raster_tavg, indices = seas_month, fun = mean) # means of variables for seasonal tavg
 tavg_array <- as.array(seas_mean_tavg)
@@ -46,7 +46,7 @@ cell_id <- c(1:length(lonlat[, 1]))
 prep_pet <- data.table() # data table for pet only .nc file
 
 for (i in 1:length(year)) {
-  pet_slice <- pet_array[, ,i]   # creating array with one year and one season values
+  pet_slice <- pet_array[, , i]   # creating array with one year and one season values
   pet_vec <- as.vector(pet_slice)
   dt <- as.data.table(cbind(pet_vec, lonlat))
   setnames(dt, old = c('pet_vec', 'Var1', 'Var2'), new = c('value', 'lat', 'lon'))
@@ -62,7 +62,7 @@ for (i in 1:length(year)) {
 prep_pre <- data.table() # data table for pre only .nc file
 
 for (i in 1:length(year)) {
-  pre_slice <- pre_array[, ,i]   
+  pre_slice <- pre_array[, , i]   
   pre_vec <- as.vector(pre_slice)
   dt <- as.data.table(cbind(pre_vec, lonlat))
   setnames(dt, old = c('pre_vec', 'Var1', 'Var2'), new = c('value', 'lat', 'lon'))
@@ -78,7 +78,7 @@ for (i in 1:length(year)) {
 prep_tavg <- data.table() # data table for pre only .nc file
 
 for (i in 1:length(year)) {
-  tavg_slice <- tavg_array[, ,i]   
+  tavg_slice <- tavg_array[, , i]   
   tavg_vec <- as.vector(tavg_slice)
   dt <- as.data.table(cbind(tavg_vec, lonlat))
   setnames(dt, old = c('tavg_vec', 'Var1', 'Var2'), new = c('value', 'lat', 'lon'))
