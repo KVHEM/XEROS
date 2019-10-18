@@ -6,24 +6,24 @@ library(raster)
 #----------load data--------------
 luter <- as.data.table(readRDS('./data/input/gridded/luterbacher/luterbacher.rds'))
 luter <- as.data.frame(luter)  # change format of year to numeic
-luter[,3] <- sapply(luter[,3],as.numeric)
+luter[,3] <- sapply(luter[, 3], as.numeric)
 luter <- as.data.table(luter)
 
 #-------------time series markers grid--------------
 one_layer <- luter[year == 1500 & season == 'wi']
-grid_id <- one_layer [,c('lon', 'lat', 'cell_id')]
+grid_id <- one_layer [, c('lon', 'lat', 'cell_id')]
 
 #--------------user interface------------------
 ui<- fluidPage(titlePanel('Seasonal temperature data - Luterbacher'),
                fluidRow( column(width = 5, offset = 0.5,
                                 numericInput('chosen_year', 'Enter year (valid input: 1500 - 1900):',
                                              value = 1500,  min = 1500, max = 1900, step = 1),
-                                radioButtons('seas', 'Season', c('winter'='wi', 'spring'='sp', 'summer'='su', 'autumn'='au'), inline = T), 
+                                radioButtons('seas', 'Season', c('winter' = 'wi', 'spring' = 'sp', 'summer' = 'su', 'autumn' = 'au'), inline = TRUE), 
                                 actionButton('btn', 'Select')
                                 
                )),
                splitLayout(
-                 leafletOutput('map1', width = '100%',height="550px"),
+                 leafletOutput('map1', width = '100%', height = "550px"),
                  plotOutput('plot')
                ))
 
@@ -60,7 +60,7 @@ server <- shinyServer(function(input, output) {
         geom_vline(xintercept = unique(luter[year == input$chosen_year]$year), col = 'red') +
         facet_wrap(~season) +
         theme_bw() + 
-        ggtitle(paste('Seasonal temperature in lon:',store_react$clickedMarker$lng,
+        ggtitle(paste('Seasonal temperature in lon:',store_react$clickedMarker$lon,
                       ' lat:',store_react$clickedMarker$lat ))+ # print clicked tile as header
         ylab('Temp. (°C)') + 
         xlab('Year')
