@@ -30,7 +30,7 @@ server <- shinyServer(function(input, output) {
   store_react <- reactiveValues(clickedMarker = NULL) # reactive values
   output$map <- renderLeaflet({
     leaflet() %>% addTiles() %>%
-      addCircleMarkers(lng = meta_print$Lon, 
+      addCircleMarkers(lon = meta_print$Lon, 
                        lat = meta_print$Lat, 
                        layerId = meta_print$id, 
                        color = 'lightslategrey' 

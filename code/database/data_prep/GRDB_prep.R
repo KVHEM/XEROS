@@ -7,7 +7,7 @@ library(doParallel)
 dir.create('./data/other/grdb/')
 dir.create('./data/other/grdb/raw')
 GRDB <- read.csv('./data/other/grdb/raw/GRDB_long.csv')
-stream_meta <- GRDB[,-c(1,12,13,14,15)]
+stream_meta <- GRDB[, -c(1, 12, 13, 14, 15)]
 stream_meta <- as.data.table(unique(stream_meta))
 saveRDS(stream_meta, file = './data/other/grdb/grdb_meta.rds')
 
@@ -46,7 +46,7 @@ path_mon <- paste0('./data/other/grdb/raw/grdcdat_mon/', id_mon$V1, '.mon')
 string_id_mon <- id_mon$V1
 
 stream_80y_global_month <- foreach(i = path_mon, j = string_id_mon, .combine = rbind) %do% 
-  as.data.table(read.table(i, header = T, sep = ';'))[, id:=j]
+  as.data.table(read.table(i, header = T, sep = ';'))[, id := j]
 
 stream_80y_global_day[, hh.mm := NULL]
 stream_80y_global_day[, Flag := NULL]

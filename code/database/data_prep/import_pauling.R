@@ -65,7 +65,7 @@ pauling[season == 'sp', mo := 4]
 pauling[season == 'su', mo := 7]
 pauling[, day:= factor(15)]
 pauling[, time := NA]
-pauling$time <- as.Date(with(pauling, paste(year, mo, day,sep = "-")), "%Y-%m-%d")
+pauling$time <- as.Date(with(pauling, paste(year, mo, day, sep = "-")), "%Y-%m-%d")
 pauling[, mo := NULL]
 pauling[, day := NULL]
 head(pauling)

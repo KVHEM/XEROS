@@ -45,15 +45,15 @@ CRU_precip_sp <- CRU[season %in% 'sp' & year >= 1900 & year <= 2000 & var %in% '
 CRU_precip_su <- CRU[season %in% 'su' & year >= 1900 & year <= 2000 & var %in% 'precip']
 CRU_precip_au <- CRU[season %in% 'au' & year >= 1900 & year <= 2000 & var %in% 'precip']
 
-precip_wi <- merge(pau_wi, CRU_precip_wi, by=c('cell_id', 'year'))
-precip_su <- merge(pau_su, CRU_precip_su, by=c('cell_id', 'year'))
-precip_sp <- merge(pau_sp, CRU_precip_sp, by=c('cell_id', 'year'))
-precip_au <- merge(pau_au, CRU_precip_au, by=c('cell_id', 'year'))
+precip_wi <- merge(pau_wi, CRU_precip_wi, by = c('cell_id', 'year'))
+precip_su <- merge(pau_su, CRU_precip_su, by = c('cell_id', 'year'))
+precip_sp <- merge(pau_sp, CRU_precip_sp, by = c('cell_id', 'year'))
+precip_au <- merge(pau_au, CRU_precip_au, by = c('cell_id', 'year'))
 
-ccorr_wi_precip <- precip_wi[,cbind(a = Find_Max_CCF(precip, value)),'cell_id']
-ccorr_su_precip <- precip_su[,cbind(a = Find_Max_CCF(precip, value)),'cell_id']
-ccorr_sp_precip <- precip_sp[,cbind(a = Find_Max_CCF(precip, value)),'cell_id']
-ccorr_au_precip <- precip_au[,cbind(a = Find_Max_CCF(precip, value)),'cell_id']
+ccorr_wi_precip <- precip_wi[, cbind(a = Find_Max_CCF(precip, value)), 'cell_id']
+ccorr_su_precip <- precip_su[, cbind(a = Find_Max_CCF(precip, value)), 'cell_id']
+ccorr_sp_precip <- precip_sp[, cbind(a = Find_Max_CCF(precip, value)), 'cell_id']
+ccorr_au_precip <- precip_au[, cbind(a = Find_Max_CCF(precip, value)), 'cell_id']
 
 ccorr_wi_precip <- merge(ccorr_wi_precip, raster_template, by = 'cell_id')
 ccorr_su_precip <- merge(ccorr_su_precip, raster_template, by = 'cell_id')
@@ -65,8 +65,8 @@ ccorr_au_precip <- merge(ccorr_au_precip, raster_template, by = 'cell_id')
 world <- ne_countries(scale = "medium", returnclass = "sf")
 
 p1 <- ggplot(data = world) +
-  stat_summary_2d(data = ccorr_wi_precip, aes(x=lon, y=lat, z = a.cor))  + 
-  geom_sf(color="white", fill=NA) +
+  stat_summary_2d(data = ccorr_wi_precip, aes(x = lon, y = lat, z = a.cor))  + 
+  geom_sf(color = "white", fill = NA) +
   scale_fill_gradientn(colours = palette_RdBu(100),
                        limits = c(min(ccorr_wi_precip$a.cor),  
                                   max(ccorr_wi_precip$a.cor)),
@@ -81,8 +81,8 @@ p1 <- ggplot(data = world) +
   theme_bw()
 
 p2 <- ggplot(data = world) +
-  stat_summary_2d(data = ccorr_sp_precip, aes(x=lon, y=lat, z = a.cor))  + 
-  geom_sf(color="white", fill=NA) +
+  stat_summary_2d(data = ccorr_sp_precip, aes(x = lon, y = lat, z = a.cor))  + 
+  geom_sf(color = "white", fill = NA) +
   scale_fill_gradientn(colours = palette_RdBu(100),
                        limits = c(min(ccorr_sp_precip$a.cor),  
                                   max(ccorr_sp_precip$a.cor)),
@@ -98,8 +98,8 @@ p2 <- ggplot(data = world) +
 
 
 p3 <- ggplot(data = world) +
-  stat_summary_2d(data = ccorr_su_precip, aes(x=lon, y=lat, z = a.cor))  + 
-  geom_sf(color="white", fill=NA) +
+  stat_summary_2d(data = ccorr_su_precip, aes(x = lon, y = lat, z = a.cor))  + 
+  geom_sf(color = "white", fill = NA) +
   scale_fill_gradientn(colours = palette_RdBu(100),
                        limits = c(min(ccorr_su_precip$a.cor),  
                                   max(ccorr_su_precip$a.cor)),
@@ -115,8 +115,8 @@ p3 <- ggplot(data = world) +
 
 
 p4 <- ggplot(data = world) +
-  stat_summary_2d(data = ccorr_au_precip, aes(x=lon, y=lat, z = a.cor))  + 
-  geom_sf(color="white", fill=NA) +
+  stat_summary_2d(data = ccorr_au_precip, aes(x = lon, y = lat, z = a.cor))  + 
+  geom_sf(color = "white", fill = NA) +
   scale_fill_gradientn(colours = palette_RdBu(100),
                        limits = c(min(ccorr_au_precip$a.cor),  
                                   max(ccorr_au_precip$a.cor)),
@@ -131,6 +131,6 @@ p4 <- ggplot(data = world) +
   theme_bw()
 
 
-gg <- grid.arrange(p1,p2,p3,p4, nrow = 2, top = 'Cross-correlation coefficient between Pauling and CRU precipitation data')
+gg <- grid.arrange(p1, p2, p3, p4, nrow = 2, top = 'Cross-correlation coefficient between Pauling and CRU precipitation data')
 
 ggsave("./results/database/cor_Pauling_CRU_20_century.pdf", gg, height = 24, width = 24, units = "cm")

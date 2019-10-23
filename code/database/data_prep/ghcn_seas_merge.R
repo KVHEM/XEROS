@@ -38,8 +38,8 @@ monthly[month == 'nov', season := 'au']
 
 table(unlist(monthly$season)) # check
 
-monthly_all <- monthly[ ,sum(precip), by = list(id, year, season, station_country, station_name, lon, lat)] # sum of precip to seasonal values
-clean_monthly <- monthly_all[!seas_to_del, on =.(id, year, season)] # delete all incomplete season based on season to del table
+monthly_all <- monthly[, sum(precip), by = list(id, year, season, station_country, station_name, lon, lat)] # sum of precip to seasonal values
+clean_monthly <- monthly_all[!seas_to_del, on = .(id, year, season)] # delete all incomplete season based on season to del table
 
 #----------------NA values daily data----------------
 
@@ -59,16 +59,16 @@ daily[month == '09', season := 'au']
 daily[month == '10', season := 'au']
 daily[month == '11', season := 'au']
 
-daily[, 9] <- sapply(daily[,9], as.numeric)
+daily[, 9] <- sapply(daily[, 9], as.numeric)
 # sum of days in month, value must be bigger than 21 in order to have at least 21 days logs in month
 daily[, count := 1]
-sum_of_days <- daily[,sum(count), by=list(id, year, month, season)] 
+sum_of_days <- daily[, sum(count), by = list(id, year, month, season)] 
 month_to_del <- sum_of_days[V1 <= 21]
 daily[, count := NULL] # get rid of counting column
 
 #-------------- create seasonal logs from daily data-------------
 
-daily_all <- daily[ ,sum(precip), by = list(id, year, season, station_country, station_name, lon, lat)]
+daily_all <- daily[, sum(precip), by = list(id, year, season, station_country, station_name, lon, lat)]
 clean_daily <- daily_all[!month_to_del, on = .(id, year, season)]
 
 #---------adjust metadata--------------------

@@ -57,7 +57,7 @@ pages2k_meta <- merge(ts_id, pages2k_meta)
 
 pages2k_ts <- pages2k_ts[ts_id$name]
 names(pages2k_ts) <- ts_id$id
-pages2k_eu <- rbindlist(lapply(pages2k_ts, data.table), idcol = T)
+pages2k_eu <- rbindlist(lapply(pages2k_ts, data.table), idcol = TRUE)
 colnames(pages2k_eu) <- c("id", "time", "temp")
 pages2k_eu <- pages2k_eu[time >= 1500]
 
@@ -77,7 +77,7 @@ pages2k_meta_id <- pages2k_meta[dt, on = 'id']
 pages2k_meta_id <- pages2k_meta_id[complete.cases(pages2k_meta_id)]
 
 leaflet::leaflet() %>% leaflet::addTiles() %>%
-  leaflet::addMarkers(pages2k_meta$lon, pages2k_meta$lat,popup = pages2k_meta$archive)
+  leaflet::addMarkers(pages2k_meta$lon, pages2k_meta$lat, popup = pages2k_meta$archive)
 
 saveRDS(pages2k_eu, file = paste0(data_dir, 'pages2k_eu.rds')) 
 saveRDS(pages2k_meta, file = paste0(data_dir, 'pages2k_eu_meta.rds'))  
