@@ -1,10 +1,10 @@
-source('./code/main.R')
-source('./code/graphics.R')
+source('../../main.R')
+source('../../graphics.R')
 library(shiny) 
 library(plotrix)
 library(leaflet)
 
-dta <- readRDS('./data/output/database/norm_ghcn_paul_owda.rds')
+dta <- readRDS('../../data/output/database/norm_ghcn_paul_owda.rds')
 
 meta_print <- unique(dta[, c('cell_id', 'lon', 'lat', 'period', 'season', 'n_val')])
 colnames(meta_print) <- c('id', 'Lon', 'Lat', 'Period', 'Season', 'N')
@@ -15,7 +15,7 @@ ecdf_plot <- ddply(dta, .(cell_id, season, period, dataset), summarize,
                    ecdf = ecdf(precip_scale)(unique(precip_scale)))
 
 # adding station name to metadata
-load("./data/input/point/ghcn/ghcn_meta_seas.rdata")
+load("../../data/input/point/ghcn/ghcn_meta_seas.rdata")
 ghcn_meta_seas[, id := NULL]
 setnames(ghcn_meta_seas, old = 'cell_id', new = 'id')
 meta_print <- unique(dta[, c('cell_id', 'lon', 'lat', 'period', 'season', 'n_val')])

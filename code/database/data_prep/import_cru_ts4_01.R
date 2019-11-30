@@ -1,15 +1,22 @@
-source('./code/main.R')
+source('../../main.R')
 
 library(ncdf4)
 library(raster)
+library(data.table)
+library(ggplot2)
 
+#-----------Download files-------------
+file_url_1 <- "https://zenodo.org/record/3552420/files/cru_pet_mon.nc?download=1"
+download_path_1 <- '../../data/input/gridded/cru_ts4.01/cru_pet_mon.nc'
+download.file(file_url_1,download_path_1,"wget")
+file_url_2 <- 'https://zenodo.org/record/3552420/files/cru_pre_mon.nc?download=1'
+download_path_2 <- '../../data/input/gridded/cru_ts4.01/cru_pre_mon.nc'
+download.file(file_url_2,download_path_2,"wget")  
+file_url_3 <- 'https://zenodo.org/record/3552420/files/cru_tavg_mon.nc?download=1'
+download_path_3 <- '../../data/input/gridded/cru_ts4.01/cru_tavg_mon.nc'
+download.file(file_url_3,download_path_3,"wget")
 #-----------read .nc file from working directory to raster-------------
-ncpath <- './data/input/gridded/cru_ts4.01/'
-dir.create(ncpath)
-
-#loads data already transformed in netcdf format in Hanel et al. 2018 
-#So it should be downloaded here; see issue #32
-
+ncpath <- '../../data/input/gridded/cru_ts4.01/'
 
 ncname_1 <- 'cru_pet_mon'
 ncfname_1 <- paste0(ncpath, ncname_1, '.nc')

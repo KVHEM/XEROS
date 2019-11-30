@@ -1,12 +1,15 @@
-source('./code/main.R')
+source('../../main.R')
+file_url <- 'https://zenodo.org/record/3552416/files/owda_1000.rds?download=1'
+download_path <- "../../data/input/gridded/owda/owda_1000.rds"
+download.file(file_url,download_path,"wget")
 
 #--------load data--------
 
-luterbacher <- readRDS('./data/input/gridded/luterbacher/luterbacher.rds')
-pauling <- readRDS('./data/input/gridded/pauling/pauling.rds')
-owda <- readRDS('./data/input/gridded/owda/owda_1000.rds')
-ljungqvist_t <- readRDS('./data/input/point/ljungqvist_t/ljungvist_t.rds')
-pages <- readRDS('./data/input/point/pages2k/pages2k_eu.rds')
+luterbacher <- readRDS('../../data/input/gridded/luterbacher/luterbacher.rds')
+pauling <- readRDS('../../data/input/gridded/pauling/pauling.rds')
+owda <- readRDS('../../data/input/gridded/owda/owda_1000.rds')
+ljungqvist_t <- readRDS('../../data/input/point/ljungqvist_t/ljungvist_t.rds')
+pages <- readRDS('../../data/input/point/pages2k/pages2k_eu.rds')
 
 #-------------creating averaged value by 10 and 5 years-----------------
 
@@ -77,7 +80,7 @@ orig <- owda
 owda[, Lon := NULL]
 owda <- cbind(east, owda)
 owda[, cell_id := NA]
-grid_bounds <- readRDS('./data/geodata/grid_cells.rds')
+grid_bounds <- readRDS('../../data/geodata/grid_cells.rds')
 grid_bounds <- grid_bounds[1:5791, ]
 owda <- grid_bounds[owda, .(cell_id, Time, Lat, Lon, scPDSI), 
                    on = .(lat_l <= Lat, lat_u > Lat,  
@@ -163,13 +166,13 @@ pages_5yr$avg_5yr <- as.numeric(pages_5yr$avg_5yr)
 pages_5yr$avg_annual <- as.numeric(pages_5yr$avg_annual)
 
 #------------save RDS files-----------------------
-saveRDS(pauling_10yr, './data/input/gridded/pauling/pauling_10yr.rds')
-saveRDS(pauling_5yr, './data/input/gridded/pauling/pauling_5yr.rds')
-saveRDS(luterbacher_10yr, './data/input/gridded/luterbacher/luterbacher_10yr.rds')
-saveRDS(luterbacher_5yr, './data/input/gridded/luterbacher/luterbacher_5yr.rds')
-saveRDS(owda_10yr, './data/input/gridded/owda/owda_10yr.rds')
-saveRDS(owda_5yr, './data/input/gridded/owda/owda_5yr.rds')
-saveRDS(ljungqvist_t_10yr, './data/input/point/ljungqvist_t/ljungqvist_t_10yr.rds')
-saveRDS(ljungqvist_t_5yr, './data/input/point/ljungqvist_t/ljungqvist_t_5yr.rds')
-saveRDS(pages_10yr, './data/input/point/pages2k/pages2k_eu_10yr.rds')
-saveRDS(pages_5yr, './data/input/point/pages2k/pages2k_eu_5yr.rds')
+saveRDS(pauling_10yr, '../../data/input/gridded/pauling/pauling_10yr.rds')
+saveRDS(pauling_5yr, '../../data/input/gridded/pauling/pauling_5yr.rds')
+saveRDS(luterbacher_10yr, '../../data/input/gridded/luterbacher/luterbacher_10yr.rds')
+saveRDS(luterbacher_5yr, '../../data/input/gridded/luterbacher/luterbacher_5yr.rds')
+saveRDS(owda_10yr, '../../data/input/gridded/owda/owda_10yr.rds')
+saveRDS(owda_5yr, '../../data/input/gridded/owda/owda_5yr.rds')
+saveRDS(ljungqvist_t_10yr, '../../data/input/point/ljungqvist_t/ljungqvist_t_10yr.rds')
+saveRDS(ljungqvist_t_5yr, '../../data/input/point/ljungqvist_t/ljungqvist_t_5yr.rds')
+saveRDS(pages_10yr, '../../data/input/point/pages2k/pages2k_eu_10yr.rds')
+saveRDS(pages_5yr, '../../data/input/point/pages2k/pages2k_eu_5yr.rds')

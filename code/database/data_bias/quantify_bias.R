@@ -1,12 +1,12 @@
-source('./code/main.R')
+source('../../main.R')
 
 acf.1 = function(x, ...) {
   tryCatch(acf(x[!is.na(x)], plot = FALSE, ...)$acf[2], error = function(e) NA)
 }
 
-ghcn <- readRDS('./data/input/point/ghcn/ghcn_seas_p.rds')
-load(file = './data/input/point/ghcn/ghcn_meta_seas.rdata')
-pauling <- data.table(readRDS('./data/input/gridded/pauling/pauling.rds'))
+ghcn <- readRDS('../../data/input/point/ghcn/ghcn_seas_p.rds')
+load(file = '../../data/input/point/ghcn/ghcn_meta_seas.rdata')
+pauling <- data.table(readRDS('../../data/input/gridded/pauling/pauling.rds'))
 
 #----------Merge Datasets------------------------------
 
@@ -31,7 +31,7 @@ setnames(dtcb, "p_obs", "precip")
 dtca$dataset <- factor("Pauling")
 dtcb$dataset <- factor("GHCN")
 dtd <- rbind(dtca, dtcb)
-saveRDS(dtd, file = "./data/output/database/ghcn_pauling.rds")
+saveRDS(dtd, file = "../../data/output/database/ghcn_pauling.rds")
 
 #----------Stats---------------------------------------
 ghcn_stat <- dtd[, 

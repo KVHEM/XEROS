@@ -1,11 +1,11 @@
-source('./code/main.R')
+source('../../main.R')
 library(leaflet)
 library(shiny) 
 library(plyr)
 
 #---------------load and prepare data---------------------
-dta <- readRDS(file = "./data/output/database/ghcn_pauling.rds")
-pauling <- data.table(readRDS('./data/input/gridded/pauling/pauling.rds')) 
+dta <- readRDS(file = "../../data/output/database/ghcn_pauling.rds")
+pauling <- data.table(readRDS('../../data/input/gridded/pauling/pauling.rds')) 
 
 dtb <- pauling[cell_id %in% unique(dta$cell_id)]
 meta_print <- unique(dta[, c('cell_id', 'lon', 'lat', 'period', 'season', 'n_val')] )
@@ -30,7 +30,7 @@ server <- shinyServer(function(input, output) {
   store_react <- reactiveValues(clickedMarker = NULL) # reactive values
   output$map <- renderLeaflet({
     leaflet() %>% addTiles() %>%
-      addCircleMarkers(lon = meta_print$Lon, 
+      addCircleMarkers(lng = meta_print$Lon, 
                        lat = meta_print$Lat, 
                        layerId = meta_print$id, 
                        color = 'lightslategrey' 

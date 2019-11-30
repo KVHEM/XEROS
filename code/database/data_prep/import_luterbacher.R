@@ -1,13 +1,12 @@
-source('./code/main.R')
+source('../../main.R')
 
 library(readtext)
 library(lubridate)
 library(magrittr)
+library(ggplot2)
 
 data_dir <- './data/input/gridded/luterbacher/'
-dir.create(data_dir)
 dload_path <- paste0(data_dir, 'raw/')
-dir.create(dload_path)
 
 #-----download--------
 sez <- c('au', 'sp', 'su', 'wi')  #seasons

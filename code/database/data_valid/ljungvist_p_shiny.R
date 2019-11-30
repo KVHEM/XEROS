@@ -5,8 +5,8 @@ library(ggplot2)
 #---------------load data---------------------
 #ljungvist_ts <- readRDS("../../Projects/2018XEROS/data/input/point/ljungvist_eu.rds")   #secondary path 
 #ljungvist_meta <- readRDS("../../Projects/2018XEROS/data/input/point/ljungvist_eu_meta.rds") #secondary path
-ljungvist_ts <- readRDS("./data/input/point/ljungqvist_p/ljungvist_p.rds")
-ljungvist_meta <- readRDS("./data/input/point/ljungqvist_p/ljungvist_p_meta.rds")
+ljungvist_ts <- readRDS("../../data/input/point/ljungqvist_p/ljungvist_p.rds")
+ljungvist_meta <- readRDS("../../data/input/point/ljungqvist_p/ljungvist_p_meta.rds")
 
 ids_eu <- ljungvist_meta[lon > -20 & lon < 40 & lat > 35, id]
 ljungvist_ts <- ljungvist_ts[id %in% ids_eu]
@@ -30,7 +30,7 @@ server <- shinyServer(function(input, output) {
   store_react <- reactiveValues(clickedMarker = NULL) # reactive values
   output$map <- renderLeaflet({
     leaflet() %>% addTiles() %>%
-    addCircleMarkers(lon = meta_print$Lon, lat = meta_print$Lat, 
+    addCircleMarkers(lng = meta_print$Lon, lat = meta_print$Lat, 
                    layerId = meta_print$id, color = pal(meta_print$Proxy)) %>%
     addLegend('topleft', pal = pal, values = meta_print$Proxy)
   })

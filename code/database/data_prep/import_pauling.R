@@ -1,15 +1,18 @@
-source('./code/main.R')
+source('../../main.R')
 library(ncdf4)
-
+library(data.table)
+library(ggplot2)
 #-----------read .nc file from working directory-------------
-
+file_url <- "https://zenodo.org/record/3552399/files/pauling.nc?download=1"
+download_path <- "../../data/input/gridded/pauling/pauling.nc"
+download.file(file_url,download_path,"wget")
 #Can be found here:
 #ftp://ftp.ncdc.noaa.gov/pub/data/paleo/historical/europe/pauling2006precip/
 #But already transformed in netcdf format in Hanel et al. 2018 
 #So it should be downloaded here see issues #29-30
 
 ncpath <- '../../data/input/gridded/pauling/'  
-ncpath <- '../../Projects/2018XEROS/data/input/gridded/pauling/'  #alternative path
+#ncpath <- '../../Projects/2018XEROS/data/input/gridded/pauling/'  #alternative path
 ncname <- 'pauling'  
 ncfname <- paste(ncpath, ncname, '.nc', sep = '')
 ncin <- nc_open(ncfname)
@@ -71,8 +74,8 @@ pauling[, day := NULL]
 head(pauling)
 
 #---------save to RDS -----------
-dir.create('./data/input/gridded/pauling/')
-fname <- './data/input/gridded/pauling/pauling.rds'
+#dir.create('./data/input/gridded/pauling/')
+fname <- '../../data/input/gridded/pauling/pauling.rds'
 saveRDS(pauling, fname)
 
 #------------validate-----------

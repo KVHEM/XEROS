@@ -1,5 +1,5 @@
-source('./code/main.R')
-source('./code/graphics.R')
+source('../../main.R')
+source('../../graphics.R')
 library(maps)
 library(rnaturalearth)
 library(rnaturalearthdata)
@@ -20,12 +20,12 @@ Find_Max_CCF <- function(a, b)
 }
 
 #------------load data----------
-pauling <- as.data.table(readRDS('./data/input/gridded/pauling/pauling.rds'))
+pauling <- as.data.table(readRDS('../../data/input/gridded/pauling/pauling.rds'))
 pauling <- pauling[complete.cases(pauling)]
-CRU <- as.data.table(readRDS('./data/input/gridded/cru_ts4.01/cru_ts4.01.rds')) 
+CRU <- as.data.table(readRDS('../../data/input/gridded/cru_ts4.01/cru_ts4.01.rds')) 
 CRU <- CRU[complete.cases(CRU)]
 
-pauling2 <- as.data.table(readRDS('./data/input/gridded/pauling/pauling.rds'))
+pauling2 <- as.data.table(readRDS('../../data/input/gridded/pauling/pauling.rds'))
 raster_template <- pauling2[, c('precip', 'year', 'season') := NULL]
 raster_template <- raster_template %>% distinct(cell_id, .keep_all = TRUE) #only one raster layer
 raster_template <- raster_template[, .(cell_id, lat, lon)]
@@ -133,4 +133,4 @@ p4 <- ggplot(data = world) +
 
 gg <- grid.arrange(p1, p2, p3, p4, nrow = 2, top = 'Cross-correlation coefficient between Pauling and CRU precipitation data')
 
-ggsave("./results/database/cor_Pauling_CRU_20_century.pdf", gg, height = 24, width = 24, units = "cm")
+ggsave("../../results/database/cor_Pauling_CRU_20_century.pdf", gg, height = 24, width = 24, units = "cm")
