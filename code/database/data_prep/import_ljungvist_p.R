@@ -1,13 +1,13 @@
-source('./code/main.R')
+source('../../main.R')
 library(rvest)
 library(leaflet)
 
 #----------download----------------------
 path <- 'https://www1.ncdc.noaa.gov/pub/data/paleo/reconstructions/hydroclimate/ljungqvist2016/hydro_proxies/'
-dir_name <- './data/input/point/ljungqvist_p/'
-dir.create(dir_name)
+dir_name <- '../../data/input/point/ljungqvist_p/'
+
 dload_dir <- paste0(dir_name, 'raw/')
-dir.create(dload_dir)
+
 
 
 dir_folder <- '../../data/input/point/raw/ljungqvist/'
@@ -39,7 +39,7 @@ for (i in 1: nrow(all_files)) {
 }
 
 #--------------------grid id-----------------------
-grid_bounds <- readRDS('./data/geodata/grid_cells.rds')
+grid_bounds <- readRDS('../../data/geodata/grid_cells.rds')
 grid_bounds <- grid_bounds[1:5791, ]
 dt <- unique(grid_bounds[melt_meta, .(id, cell_id), 
                          on = .(lat_l <= lat, lat_u > lat,  

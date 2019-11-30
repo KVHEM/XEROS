@@ -1,10 +1,11 @@
-source('./code/main.R')
+#source('./code/main.R')
 library(shiny)
 library(leaflet)
 library(raster)
+library(ggplot2)
 
 #----------load data--------------
-luter <- as.data.table(readRDS('./data/input/gridded/luterbacher/luterbacher.rds'))
+luter <- as.data.table(readRDS('../../data/input/gridded/luterbacher/luterbacher.rds'))
 luter <- as.data.frame(luter)  # change format of year to numeic
 luter[,3] <- sapply(luter[, 3], as.numeric)
 luter <- as.data.table(luter)

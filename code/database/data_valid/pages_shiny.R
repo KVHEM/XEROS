@@ -1,11 +1,12 @@
-source('./code/main.R')
+#source('./code/main.R')
 
 library(leaflet)
-library(shiny) 
+library(shiny)
+library(ggplot2)
 
 #---------------load data---------------------
-pages2k_ts <- readRDS("./data/input/point/pages2k/pages2k_eu.rds")
-pages2k_meta <- readRDS("./data/input/point/pages2k/pages2k_eu_meta.rds")
+pages2k_ts <- readRDS("../../data/input/point/pages2k/pages2k_eu.rds")
+pages2k_meta <- readRDS("../../data/input/point/pages2k/pages2k_eu_meta.rds")
 
 # -----------prepare data for printing---------------
 meta_print <- pages2k_meta[, c('name', 'id', 'region', 'lon', 'lat', 'archive', 'min_year', 'max_year')] 
@@ -25,7 +26,7 @@ server <- shinyServer(function(input, output) {
   store_react <- reactiveValues(clickedMarker = NULL) # reactive values
   output$map <- renderLeaflet({
     leaflet() %>% addTiles() %>%
-    addCircleMarkers(lon = meta_print$Lon, lat = meta_print$Lat, 
+    addCircleMarkers(lng = meta_print$Lon, lat = meta_print$Lat, 
                    layerId = meta_print$id, color = pal(meta_print$Archive)) %>%
     addLegend('topleft', pal = pal, values = meta_print$Archive)
   })

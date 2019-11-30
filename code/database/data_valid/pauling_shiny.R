@@ -1,10 +1,11 @@
-source('./code/main.R')
+#source('./code/main.R')
 library(shiny)
 library(leaflet)
 library(raster)
+library(ggplot2)
 
 #----------load data--------------
-pauling <- as.data.table(readRDS('./data/input/gridded/pauling/pauling.rds'))
+pauling <- as.data.table(readRDS('../../data/input/gridded/pauling/pauling.rds'))
 
 pauling[, precip_z := scale(precip), .(season, lat, lon)]
 

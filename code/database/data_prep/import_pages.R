@@ -1,10 +1,14 @@
-source('./code/main.R')
+source('../../main.R')
 
 library(rlist)
 library(rgdal)
+library(dplyr)
 
-data_dir <- './data/input/point/pages2k/'
-dir.create(data_dir)
+file_url <- ' https://zenodo.org/record/3552420/files/PAGES2k_v2.0.0.RData?download=1'
+download_path <- "../../data/input/point/pages2k/PAGES2k_v2.0.0.RData"
+download.file(file_url,download_path,"wget")
+
+data_dir <- '../../data/input/point/pages2k/'
 data_name <- 'PAGES2k_v2.0.0.RData'
 load(paste0(data_dir, data_name))
 #The file should be uploaded in a public repository and downloaded here see issue #31
@@ -67,7 +71,7 @@ pages2k_meta = cbind(pages2k_meta,  #add wintri projection of coordinates to plo
                                         proj = "+proj=wintri"))) 
 
 #--------------------grid id-----------------------
-grid_bounds <- readRDS('./data/geodata/grid_cells.rds')
+grid_bounds <- readRDS('../../data/geodata/grid_cells.rds')
 grid_bounds <- grid_bounds[1:5791, ]
 dt <- unique(grid_bounds[pages2k_meta, .(id, cell_id), 
                          on = .(lat_l <= lat, lat_u > lat,  

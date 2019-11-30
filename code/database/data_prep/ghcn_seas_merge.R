@@ -1,4 +1,4 @@
-source('./code/main.R')
+source('../../main.R')
 
 #---------load data----------------
 daily <- as.data.table(readRDS('./data/input/point/ghcn/ghcn_daily_p.rds'))

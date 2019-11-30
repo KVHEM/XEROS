@@ -38,3 +38,5 @@ Stations from Europe were picked from metadata, connected to grid cell ids and s
 timescale.R : Creates averaged values in 5 and 10 years time periods of pages, luterbacher, owda and ljungvist datasets.
 
 GRDB_prep.R : Takes GRDB.csv file and creates metadata stream file. Loads data from raw file and creates RDS files with 80 years global logs and 150 year Europe logs (both mothly and daily) that are linked to metadata file by id.
+
+ghcn_seas_merge.R: Creates seasonal data from ghcn daily and monthly data.

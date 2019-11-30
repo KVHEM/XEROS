@@ -1,5 +1,5 @@
-source('./code/main.R')
-source('./code/graphics.R')
+source('../../main.R')
+source('../../graphics.R')
 library(sf)
 library(rnaturalearth)
 library(rnaturalearthdata)
@@ -9,8 +9,8 @@ library(gridExtra)
 
 #----------load pauling data--------
 
-pauling <- as.data.table(readRDS('./data/input/gridded/pauling/pauling.rds'))
-pauling2 <- as.data.table(readRDS('./data/input/gridded/pauling/pauling.rds'))
+pauling <- as.data.table(readRDS('../../data/input/gridded/pauling/pauling.rds'))
+pauling2 <- as.data.table(readRDS('../../data/input/gridded/pauling/pauling.rds'))
 
 #----computation of variation for every season and  two time periods: old(1500-1600) and new (1900-2000)
 #----and ratio between these variation in every point---------
@@ -123,5 +123,5 @@ p4 <- ggplot(data = world) +
   theme_bw()
 
 gg <- grid.arrange(p1, p2, p3, p4, nrow = 2, top = 'Variance ratio between 1500-1600 & 1900-2000')
-ggsave("./results/database/var_ratio_16_vs_20_century.pdf", gg, height = 24, width = 24, units = "cm")
+ggsave("../../results/database/var_ratio_16_vs_20_century.pdf", gg, height = 24, width = 24, units = "cm")
 
