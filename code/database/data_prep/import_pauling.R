@@ -33,7 +33,7 @@ dtm = data.table(DTM = dtm, season = c('wi', 'sp', 'su', 'au')[quarter(dtm)], mo
 dta = dtm[dta, on =  'mon']
 dta[, mon := NULL]
 
-# saveRDS()
+saveRDS(dta, file.path(.path, "data", 'input', "gridded", "pauling", "pauling.rds"))
 
 
 
