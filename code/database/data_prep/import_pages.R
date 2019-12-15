@@ -6,7 +6,7 @@ library(dplyr)
 
 file_url <- ' https://zenodo.org/record/3552420/files/PAGES2k_v2.0.0.RData?download=1'
 download_path <- "../../data/input/point/pages2k/PAGES2k_v2.0.0.RData"
-download.file(file_url,download_path,"wget")
+download.file(file_url,download_path)
 
 data_dir <- '../../data/input/point/pages2k/'
 data_name <- 'PAGES2k_v2.0.0.RData'
