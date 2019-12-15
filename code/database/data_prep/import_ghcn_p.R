@@ -3,10 +3,10 @@ library(leaflet)
 #-----------download txt files-----------------------
 file_url_1 <- 'https://zenodo.org/record/3552420/files/precip_d_source_knmi.txt?download=1'
 download_path_1 <- "../../data/input/point/ghcn/precip_d_source_knmi.txt"
-download.file(file_url_1,download_path_1,"wget")
+download.file(file_url_1,download_path_1)
 file_url_2 <- 'https://zenodo.org/record/3552420/files/precip_m_source_knmi.txt?download=1'
 download_path_2 <- "../../data/input/point/ghcn/precip_m_source_knmi.txt"
-download.file(file_url_2,download_path_2,"wget")
+download.file(file_url_2,download_path_2)
 
 path_d <- '../../data/input/point/ghcn/raw/precip_d/'
 path_m <- '../../data/input/point/ghcn/raw/precip_m/'
