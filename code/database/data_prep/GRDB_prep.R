@@ -6,10 +6,10 @@ library(doParallel)
 #-------------download files----------------------------
 file_url_1 <- 'https://zenodo.org/record/3552420/files/GRDB_long.csv?download=1'
 download_path_1 <- "../../data/other/grdb/raw/GRDB_long.csv"
-download.file(file_url_1,download_path_1,"wget")
+download.file(file_url_1,download_path_1)
 file_url_2 <- 'https://zenodo.org/record/3552420/files/raw.zip?download=1'
 download_path_2 <- "../../data/other/grdb/raw/raw.zip"
-download.file(file_url_2,download_path_2,"wget")
+download.file(file_url_2,download_path_2)
 unzip_path <- "../../data/other/grdb/raw"
 unzip(download_path_2, exdir = unzip_path)
 
