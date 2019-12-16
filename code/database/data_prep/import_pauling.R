@@ -9,6 +9,42 @@ file_url <- "https://zenodo.org/record/3552399/files/pauling.nc?download=1"
 download_path <- "../../data/input/gridded/pauling/pauling.nc"
 download.file(file_url,download_path)
 
+
+
+# TO CHECK
+
+# #-----------read .nc file from working directory-------------
+# file_url <- "https://zenodo.org/record/3552399/files/pauling.nc?download=1"
+# #download_path <- "../../data/input/gridded/pauling/pauling.nc"
+# 
+# download_path = file.path(.path, "data", 'input', "gridded", "pauling", "pauling.nc") # it is safer to use file.path then relative paths
+# download.file(file_url,download_path,"wget")
+# 
+# #Can be found here:
+# #ftp://ftp.ncdc.noaa.gov/pub/data/paleo/historical/europe/pauling2006precip/
+# #But already transformed in netcdf format in Hanel et al. 2018 
+# #So it should be downloaded here see issues #29-30
+# 
+# b = brick(download_path)
+# a = as.array(b)
+# 
+# ncin <- nc_open(download_path)
+# 
+# lon <- ncvar_get(ncin, 'lon')    # longitude/ latitude vector
+# lat <- ncvar_get(ncin, 'lat')
+# dtm = as.Date('1500-01-01') + months(b@z[[1]])
+# 
+# dimnames(a) = list(LAT = lat, LON = lon, mon = b@z[[1]])
+# dta = data.table(melt(a))
+# dta[, cell_id := LAT*10000000 + LON * 100]
+# dtm = data.table(DTM = dtm, season = c('wi', 'sp', 'su', 'au')[quarter(dtm)], mon = b@z[[1]])
+# dta = dtm[dta, on =  'mon']
+# dta[, mon := NULL]
+# 
+# saveRDS(dta, file.path(.path, "data", 'input', "gridded", "pauling", "pauling.rds"))
+
+#ORIGINAL
+
 ncpath <- '../../data/input/gridded/pauling/'
 #ncpath <- '../../Projects/2018XEROS/data/input/gridded/pauling/'  #alternative path
 ncname <- 'pauling'
@@ -86,34 +122,3 @@ ggplot(try, aes(x = lon, y = lat, fill = precip)) +
   facet_grid(season ~ year) +
   theme_minimal()
 
-# TO CHECK
-
-# #-----------read .nc file from working directory-------------
-# file_url <- "https://zenodo.org/record/3552399/files/pauling.nc?download=1"
-# #download_path <- "../../data/input/gridded/pauling/pauling.nc"
-# 
-# download_path = file.path(.path, "data", 'input', "gridded", "pauling", "pauling.nc") # it is safer to use file.path then relative paths
-# download.file(file_url,download_path,"wget")
-# 
-# #Can be found here:
-# #ftp://ftp.ncdc.noaa.gov/pub/data/paleo/historical/europe/pauling2006precip/
-# #But already transformed in netcdf format in Hanel et al. 2018 
-# #So it should be downloaded here see issues #29-30
-# 
-# b = brick(download_path)
-# a = as.array(b)
-# 
-# ncin <- nc_open(download_path)
-# 
-# lon <- ncvar_get(ncin, 'lon')    # longitude/ latitude vector
-# lat <- ncvar_get(ncin, 'lat')
-# dtm = as.Date('1500-01-01') + months(b@z[[1]])
-# 
-# dimnames(a) = list(LAT = lat, LON = lon, mon = b@z[[1]])
-# dta = data.table(melt(a))
-# dta[, cell_id := LAT*10000000 + LON * 100]
-# dtm = data.table(DTM = dtm, season = c('wi', 'sp', 'su', 'au')[quarter(dtm)], mon = b@z[[1]])
-# dta = dtm[dta, on =  'mon']
-# dta[, mon := NULL]
-# 
-# saveRDS(dta, file.path(.path, "data", 'input', "gridded", "pauling", "pauling.rds"))
