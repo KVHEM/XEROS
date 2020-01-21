@@ -8,13 +8,13 @@ library(ggplot2)
 #-----------Download files-------------
 file_url_1 <- "https://zenodo.org/record/3552420/files/cru_pet_mon.nc?download=1"
 download_path_1 <- '../../data/input/gridded/cru_ts4.01/cru_pet_mon.nc'
-download.file(file_url_1,download_path_1,"wget")
+download.file(file_url_1,download_path_1)
 file_url_2 <- 'https://zenodo.org/record/3552420/files/cru_pre_mon.nc?download=1'
 download_path_2 <- '../../data/input/gridded/cru_ts4.01/cru_pre_mon.nc'
-download.file(file_url_2,download_path_2,"wget")  
+download.file(file_url_2,download_path_2)  
 file_url_3 <- 'https://zenodo.org/record/3552420/files/cru_tavg_mon.nc?download=1'
 download_path_3 <- '../../data/input/gridded/cru_ts4.01/cru_tavg_mon.nc'
-download.file(file_url_3,download_path_3,"wget")
+download.file(file_url_3,download_path_3)
 #-----------read .nc file from working directory to raster-------------
 ncpath <- '../../data/input/gridded/cru_ts4.01/'
 
